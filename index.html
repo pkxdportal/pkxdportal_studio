@@ -3202,6 +3202,510 @@
       }
     }
 
+
+    /* ===== Square 1:1 polish v3 ===== */
+    /* Правки по экспортированным карточкам: убираем некрасивые места,
+       лучше распределяем контент по квадрату и чистим конфликтные блоки. */
+
+    .poster-title {
+      max-width: 940px;
+      font-size: 70px;
+      line-height: .97;
+    }
+
+    .poster-subtitle {
+      max-width: 930px;
+      font-size: 22px;
+      line-height: 1.24;
+    }
+
+    /* Наказания: чуть ровнее сетка и аккуратнее боковые заметки */
+    .penalty-grid {
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .penalty-card {
+      grid-template-columns: 154px minmax(0, 1fr) 228px;
+      column-gap: 15px;
+      padding: 15px 16px 15px 20px;
+    }
+
+    .penalty-card::after {
+      right: 246px;
+    }
+
+    .rule-list {
+      align-self: start;
+      padding-top: 4px;
+    }
+
+    .rule-item {
+      line-height: 1.17;
+    }
+
+    .card-note {
+      display: flex;
+      align-items: center;
+      padding: 14px 15px;
+      line-height: 1.24;
+    }
+
+    /* Личные фильтры: убираем рваные места и заполняем пустоту */
+    .poster-main-filters {
+      display: grid;
+      grid-template-rows: auto auto auto 1fr;
+      gap: 14px;
+      align-content: start;
+      min-height: 100%;
+    }
+
+    .poster-main-filters > * {
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+    }
+
+    .filters-intro {
+      padding: 16px 18px 16px 23px;
+      font-size: 20px;
+      line-height: 1.22;
+    }
+
+    .filter-chips {
+      gap: 8px;
+      margin-bottom: 0;
+    }
+
+    .filter-chip {
+      font-size: 15px;
+    }
+
+    .bot-callout {
+      grid-template-columns: 64px minmax(0, 1fr);
+      grid-template-areas:
+        "icon copy"
+        "icon path";
+      gap: 10px 15px;
+      padding: 16px 18px;
+      align-items: center;
+    }
+
+    .bot-callout::after {
+      display: none;
+    }
+
+    .bot-callout > .bot-icon {
+      grid-area: icon;
+    }
+
+    .bot-callout > .bot-copy {
+      grid-area: copy;
+    }
+
+    .bot-callout > .bot-path {
+      grid-area: path;
+      max-width: none;
+      width: fit-content;
+      padding: 8px 12px;
+      font-size: 14px;
+      line-height: 1.2;
+      text-align: left;
+    }
+
+    .steps-grid {
+      gap: 12px;
+      margin-top: 0;
+      align-content: stretch;
+    }
+
+    .step-card {
+      min-height: 112px;
+      grid-template-columns: 58px 225px minmax(0, 1fr);
+      gap: 14px;
+      padding: 16px 18px;
+      align-items: center;
+    }
+
+    .step-card h3 {
+      font-size: 22px;
+      line-height: 1.08;
+    }
+
+    .step-card p {
+      font-size: 18px;
+      line-height: 1.18;
+    }
+
+    /* Важно: делаем страницу плотнее и чище */
+    .poster-main-important {
+      display: grid;
+      grid-template-rows: auto auto auto auto;
+      gap: 12px;
+      align-content: start;
+      min-height: 100%;
+    }
+
+    .poster-main-important > * {
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+    }
+
+    .scope-banner {
+      padding: 15px 17px;
+      font-size: 20px;
+      line-height: 1.18;
+    }
+
+    .outside-card {
+      min-height: 126px;
+      padding: 17px 18px 17px 22px;
+    }
+
+    .outside-card p {
+      font-size: 19px;
+      line-height: 1.22;
+    }
+
+    .important-list {
+      grid-template-columns: 1fr;
+      gap: 11px;
+      margin: 0;
+    }
+
+    .important-item {
+      min-height: 88px;
+      padding: 14px 16px;
+      align-items: center;
+    }
+
+    .important-item p {
+      font-size: 19px;
+      line-height: 1.16;
+    }
+
+    .appeal-card {
+      min-height: 96px;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      padding: 16px 18px;
+      align-items: center;
+    }
+
+    .appeal-card::after {
+      display: none;
+    }
+
+    .appeal-card strong {
+      font-size: 21px;
+      line-height: 1.1;
+    }
+
+    .appeal-link {
+      padding: 10px 14px;
+      border-radius: 13px;
+      background: rgba(255,255,255,.24);
+      font-size: 15px;
+    }
+
+
+  
+
+    /* ===== Square 1:1 fill layout v5 ===== */
+    /* Заполняем полезную высоту квадрата контентом, а не пустым фоном. */
+
+    .poster-main-penalties,
+    .poster-main-filters,
+    .poster-main-important {
+      min-height: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* Стабильные поверхности при PNG-экспорте. */
+    .penalty-card,
+    .filters-intro,
+    .bot-callout,
+    .step-card,
+    .scope-banner,
+    .outside-card,
+    .important-item {
+      background: var(--poster-card-strong);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.055),
+        0 8px 24px rgba(0,0,0,.11);
+    }
+
+    /* 01. Наказания занимают почти всю свободную высоту. */
+    .poster-main-penalties .penalty-grid {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+      align-content: stretch;
+    }
+
+    .poster-main-penalties .penalty-card {
+      height: 100%;
+      min-height: 0;
+      grid-template-columns: 158px minmax(0, 1fr) 220px;
+      column-gap: 18px;
+      padding: 19px 18px 19px 22px;
+      border-radius: 22px;
+      overflow: hidden;
+    }
+
+    .poster-main-penalties .penalty-card::after {
+      display: none;
+    }
+
+    .poster-main-penalties .level-row {
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .poster-main-penalties .penalty-name {
+      font-size: 40px;
+    }
+
+    .poster-main-penalties .rule-list {
+      align-self: center;
+      gap: 9px;
+      padding: 4px 0;
+    }
+
+    .poster-main-penalties .rule-item {
+      font-size: 19px;
+      line-height: 1.2;
+    }
+
+    .poster-main-penalties .card-note {
+      display: flex;
+      align-items: center;
+      align-self: stretch;
+      margin: 0;
+      padding: 16px;
+      border-radius: 17px;
+      background: rgba(255,255,255,.05);
+      font-size: 16px;
+      line-height: 1.26;
+    }
+
+    /* 02. Основной объём страницы фильтров отдаём трём шагам. */
+    .poster-main-filters .filters-intro {
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      margin: 18px 0 12px !important;
+      padding: 17px 20px 17px 24px;
+    }
+
+    .poster-main-filters .filter-chips {
+      margin: 0 0 13px !important;
+    }
+
+    .poster-main-filters .bot-callout {
+      min-height: 98px;
+      grid-template-columns: 68px minmax(0, 1fr) 220px;
+      grid-template-areas: "icon copy path";
+      gap: 16px;
+      padding: 16px 18px;
+      border-radius: 20px;
+    }
+
+    .poster-main-filters .bot-callout::after {
+      display: none !important;
+    }
+
+    .poster-main-filters .bot-callout > .bot-icon { grid-area: icon; }
+    .poster-main-filters .bot-callout > .bot-copy { grid-area: copy; }
+    .poster-main-filters .bot-callout > .bot-path { grid-area: path; }
+
+    .poster-main-filters .bot-icon {
+      width: 68px;
+      height: 68px;
+    }
+
+    .poster-main-filters .bot-path {
+      max-width: 220px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,.055);
+      font-size: 15px;
+      line-height: 1.18;
+    }
+
+    .poster-main-filters .steps-grid {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(3, minmax(0, 1fr));
+      gap: 13px;
+      margin-top: 14px !important;
+      align-content: stretch;
+    }
+
+    .poster-main-filters .step-card {
+      height: 100%;
+      min-height: 0;
+      grid-template-columns: 66px 235px minmax(0, 1fr);
+      gap: 16px;
+      align-items: center;
+      padding: 19px 22px;
+      border-radius: 21px;
+    }
+
+    .poster-main-filters .step-number {
+      width: 50px;
+      height: 50px;
+      border-radius: 15px;
+      font-size: 14px;
+    }
+
+    .poster-main-filters .step-card h3 {
+      font-size: 22px;
+      line-height: 1.1;
+    }
+
+    .poster-main-filters .step-card p {
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    /* 03. «Что важно знать» растягиваем по всей карточке. */
+    .poster-main-important .scope-banner {
+      min-height: 60px;
+      margin: 18px 0 13px !important;
+      padding: 15px 18px;
+      border-radius: 19px;
+    }
+
+    .poster-main-important .outside-card {
+      flex: 1.18 1 0;
+      min-height: 142px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 20px 22px 20px 25px;
+      border-radius: 20px;
+    }
+
+    .poster-main-important .outside-card p {
+      font-size: 20px;
+      line-height: 1.24;
+    }
+
+    .poster-main-important .important-list {
+      flex: 1 1 0;
+      min-height: 112px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr;
+      gap: 12px;
+      margin: 13px 0 !important;
+      align-items: stretch;
+    }
+
+    .poster-main-important .important-item {
+      height: 100%;
+      min-height: 0;
+      grid-template-columns: 48px minmax(0,1fr);
+      gap: 14px;
+      align-items: center;
+      padding: 17px 18px;
+      border-radius: 20px;
+    }
+
+    .poster-main-important .important-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 15px;
+      font-size: 21px;
+    }
+
+    .poster-main-important .important-item p {
+      font-size: 18px;
+      line-height: 1.18;
+    }
+
+    .poster-main-important .appeal-card {
+      min-height: 106px;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: center;
+      padding: 18px 20px 18px 23px;
+      border: 1px solid var(--poster-accent-border);
+      border-radius: 20px;
+      color: #fff;
+      background: var(--poster-card-strong);
+      box-shadow:
+        inset 4px 0 0 var(--poster-accent),
+        inset 0 1px 0 rgba(255,255,255,.055),
+        0 8px 24px rgba(0,0,0,.11);
+    }
+
+    .poster-main-important .appeal-card::after {
+      display: none !important;
+    }
+
+    .poster-main-important .appeal-card small {
+      color: var(--poster-accent);
+      font-size: 14px;
+    }
+
+    .poster-main-important .appeal-card strong {
+      color: #fff;
+      font-size: 22px;
+      line-height: 1.12;
+    }
+
+    .poster-main-important .appeal-link {
+      padding: 11px 14px;
+      border: 1px solid var(--poster-accent-border);
+      border-radius: 13px;
+      color: #08101b;
+      background: var(--poster-accent);
+      font-size: 15px;
+    }
+
+    /* html2canvas: экспорт без состояний редактора и тяжёлых эффектов. */
+    .export-clean,
+    .export-clean * {
+      animation: none !important;
+      transition: none !important;
+      caret-color: transparent !important;
+    }
+
+    .export-clean [contenteditable="true"],
+    .export-clean [contenteditable="false"] {
+      background: transparent !important;
+      box-shadow: none !important;
+      outline: none !important;
+    }
+
+    .export-clean .poster-bg-image,
+    .export-clean .poster-brand-logo {
+      filter: none !important;
+    }
+
+    .export-clean .penalty-card,
+    .export-clean .filters-intro,
+    .export-clean .bot-callout,
+    .export-clean .step-card,
+    .export-clean .scope-banner,
+    .export-clean .outside-card,
+    .export-clean .important-item,
+    .export-clean .appeal-card,
+    .export-clean .card-note,
+    .export-clean .bot-path {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+
   </style>
 </head>
 <body>
@@ -3861,7 +4365,7 @@
     }
 
     function basePoster(page, index) {
-      poster.className = `poster theme-${state.theme}`;
+      poster.className = `poster theme-${state.theme} poster-${page.id}`;
       poster.style.setProperty("--bg-opacity", `${state.backgroundOpacity / 100}`);
       poster.style.setProperty("--shade-opacity", String(getShadeOpacity()));
       poster.innerHTML = "";
@@ -3891,7 +4395,7 @@
       inner.appendChild(header);
 
       const main = document.createElement("section");
-      main.className = "poster-main";
+      main.className = `poster-main poster-main-${page.id}`;
       main.appendChild(editable("p", "poster-kicker", `pages.${index}.kicker`, page.kicker));
       main.appendChild(editable("h1", "poster-title", `pages.${index}.title`, page.title, true));
       main.appendChild(editable("p", "poster-subtitle", `pages.${index}.subtitle`, page.subtitle, true));
@@ -4395,7 +4899,11 @@
           scale: 1,
           useCORS: true,
           backgroundColor: null,
-          logging: false
+          logging: false,
+          foreignObjectRendering: false,
+          scrollX: 0,
+          scrollY: 0,
+          imageTimeout: 15000
         });
       } finally {
         holder.remove();
@@ -5183,7 +5691,366 @@
     function prepareChestSource() {
       let source = decodeBase64Utf8(CHEST_SOURCE_BASE64);
       const fontLink = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400..900&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">';
-      source = source.replace("</head>", `${fontLink}<style>${CHEST_PORTAL_THEME}</style></head>`);
+      source = source.replace("</head>", `${fontLink}<style>${CHEST_PORTAL_THEME}
+
+    /* ===== Square 1:1 export polish v4 ===== */
+    /* Экспорт должен выглядеть так же чисто, как предпросмотр. Убираем резкие
+       прозрачные зоны поверх яркого фона и выравниваем композицию карточек. */
+
+    .poster-inner {
+      padding: 38px 48px 30px;
+    }
+
+    .poster-main {
+      padding-top: 22px;
+    }
+
+    .poster-title {
+      font-size: 68px;
+      line-height: .98;
+      letter-spacing: -.045em;
+    }
+
+    .poster-subtitle {
+      margin-top: 9px;
+      font-size: 21px;
+      line-height: 1.23;
+    }
+
+    /* Общая поверхность. Фон остаётся виден, но больше не режет блоки
+       яркими прямоугольниками и полосами. */
+    .penalty-card,
+    .filters-intro,
+    .bot-callout,
+    .step-card,
+    .scope-banner,
+    .outside-card,
+    .important-item {
+      background: var(--poster-card-strong);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.055),
+        0 8px 24px rgba(0,0,0,.11);
+    }
+
+    /* Наказания */
+    .penalty-grid {
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .penalty-card {
+      grid-template-columns: 158px minmax(0, 1fr) 216px;
+      column-gap: 17px;
+      padding: 16px 17px 16px 21px;
+      border-radius: 21px;
+      overflow: hidden;
+    }
+
+    .penalty-card::after {
+      display: none;
+    }
+
+    .level-row {
+      gap: 8px;
+      margin-bottom: 9px;
+    }
+
+    .level-tag {
+      width: fit-content;
+      max-width: 148px;
+      padding: 5px 9px;
+      font-size: 10px;
+      line-height: 1.1;
+    }
+
+    .penalty-name {
+      font-size: 38px;
+      line-height: .96;
+    }
+
+    .penalty-duration {
+      margin-top: 7px;
+      font-size: 18px;
+    }
+
+    .rule-list {
+      align-self: center;
+      gap: 7px;
+      padding: 3px 0;
+    }
+
+    .rule-item {
+      grid-template-columns: 10px minmax(0, 1fr);
+      gap: 10px;
+      font-size: 18.5px;
+      line-height: 1.18;
+    }
+
+    .rule-dot {
+      width: 7px;
+      height: 7px;
+      margin-top: 7px;
+    }
+
+    .card-note {
+      display: flex;
+      align-items: center;
+      align-self: stretch;
+      padding: 14px 15px;
+      border: 1px solid var(--level-note-border);
+      border-radius: 15px;
+      background: rgba(255,255,255,.045);
+      font-size: 15.5px;
+      line-height: 1.25;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.035);
+    }
+
+    /* Личные фильтры */
+    .poster-main-filters {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .poster-main-filters .filters-intro {
+      margin: 18px 0 12px !important;
+    }
+
+    .filters-intro {
+      padding: 16px 19px 16px 24px;
+      border-color: rgba(255,255,255,.13);
+      border-radius: 18px;
+      font-size: 20px;
+      line-height: 1.2;
+    }
+
+    .filters-intro::before {
+      top: 11px;
+      bottom: 11px;
+    }
+
+    .filter-chips {
+      gap: 8px;
+      margin: 0 0 12px !important;
+    }
+
+    .filter-chip {
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.075);
+      font-size: 15px;
+    }
+
+    .filter-chip-wrap .filter-chip {
+      padding-right: 34px;
+    }
+
+    .export-clean .filter-chip {
+      padding-right: 14px;
+    }
+
+    .bot-callout {
+      grid-template-columns: 64px minmax(0, 1fr) auto;
+      grid-template-areas: "icon copy path";
+      gap: 15px;
+      align-items: center;
+      padding: 15px 17px;
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .bot-callout::after {
+      display: none !important;
+    }
+
+    .bot-callout > .bot-icon { grid-area: icon; }
+    .bot-callout > .bot-copy { grid-area: copy; }
+    .bot-callout > .bot-path { grid-area: path; }
+
+    .bot-copy strong {
+      font-size: 21px;
+      line-height: 1.1;
+    }
+
+    .bot-path {
+      width: auto;
+      max-width: 205px;
+      padding: 9px 11px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.055);
+      font-size: 14px;
+      line-height: 1.18;
+      text-align: left;
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 12px !important;
+    }
+
+    .step-card {
+      grid-template-columns: 58px 215px minmax(0, 1fr);
+      min-height: 74px;
+      gap: 14px;
+      align-items: center;
+      padding: 13px 17px;
+      border-radius: 17px;
+      overflow: hidden;
+    }
+
+    .step-card::before {
+      top: 10px;
+      bottom: 10px;
+    }
+
+    .step-number {
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background: rgba(255,255,255,.055);
+    }
+
+    .step-card h3 {
+      font-size: 20px;
+      line-height: 1.1;
+    }
+
+    .step-card p {
+      font-size: 17px;
+      line-height: 1.18;
+    }
+
+    /* Что важно знать */
+    .poster-main-important {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .poster-main-important .scope-banner {
+      margin: 18px 0 12px !important;
+    }
+
+    .scope-banner {
+      padding: 14px 17px;
+      border-radius: 18px;
+      font-size: 19px;
+      line-height: 1.18;
+    }
+
+    .outside-card {
+      min-height: 0;
+      padding: 16px 19px 17px 22px;
+      border-radius: 18px;
+    }
+
+    .outside-card p {
+      font-size: 19px;
+      line-height: 1.22;
+    }
+
+    .important-list {
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 11px 0 !important;
+    }
+
+    .important-item {
+      min-height: 78px;
+      padding: 12px 14px;
+      border-radius: 17px;
+    }
+
+    .important-item p {
+      font-size: 17px;
+      line-height: 1.16;
+    }
+
+    /* Вместо выбивающейся бело-розовой полосы делаем нормальный блок. */
+    .appeal-card {
+      min-height: 78px;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      padding: 14px 16px 14px 19px;
+      overflow: hidden;
+      border: 1px solid var(--poster-accent-border);
+      border-radius: 18px;
+      color: #fff;
+      background: var(--poster-card-strong);
+      box-shadow:
+        inset 4px 0 0 var(--poster-accent),
+        inset 0 1px 0 rgba(255,255,255,.055),
+        0 8px 24px rgba(0,0,0,.11);
+    }
+
+    .appeal-card::after {
+      display: none !important;
+    }
+
+    .appeal-card small {
+      margin-bottom: 3px;
+      color: var(--poster-accent);
+      font-size: 13px;
+    }
+
+    .appeal-card strong {
+      color: #fff;
+      font-size: 20px;
+      line-height: 1.1;
+    }
+
+    .appeal-link {
+      padding: 10px 13px;
+      border: 1px solid var(--poster-accent-border);
+      border-radius: 12px;
+      color: #08101b;
+      background: var(--poster-accent);
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    /* Экспорт. Не даём html2canvas захватывать состояния редактора и
+       сложные эффекты, которые иногда дают грязные прямоугольники. */
+    .export-clean,
+    .export-clean * {
+      animation: none !important;
+      transition: none !important;
+      caret-color: transparent !important;
+    }
+
+    .export-clean [contenteditable="true"],
+    .export-clean [contenteditable="false"] {
+      background: transparent !important;
+      box-shadow: none !important;
+      outline: none !important;
+    }
+
+    .export-clean .poster-bg-image {
+      filter: none !important;
+    }
+
+    .export-clean .poster-brand-logo {
+      filter: none !important;
+    }
+
+    .export-clean .penalty-card,
+    .export-clean .filters-intro,
+    .export-clean .bot-callout,
+    .export-clean .step-card,
+    .export-clean .scope-banner,
+    .export-clean .outside-card,
+    .export-clean .important-item,
+    .export-clean .appeal-card,
+    .export-clean .card-note,
+    .export-clean .bot-path {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+
+  </style></head>`);
       source = source.replace("accentColor: '#1edbff'", "accentColor: '#ff79dc'");
       source = source.replace('value="#1edbff"', 'value="#ff79dc"');
       const mobileSaveScript = "<script>" + CHEST_MOBILE_SAVE_CODE + "<" + "/script>";
