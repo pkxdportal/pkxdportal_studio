@@ -2594,6 +2594,614 @@
         grid-template-columns: 1fr;
       }
     }
+  
+
+    /* ===== Square 1:1 polish v2 ===== */
+    /* Финальный слой оформления. Он специально стоит последним, чтобы не ломать редактор. */
+
+    .poster {
+      border-radius: 42px;
+      font-family: "Exo 2", "Segoe UI", Arial, sans-serif;
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.13),
+        inset 0 0 90px rgba(0,0,0,.18),
+        0 28px 80px rgba(0,0,0,.46);
+    }
+
+    .poster::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 11% 17%, var(--poster-accent-soft), transparent 23%),
+        radial-gradient(circle at 92% 76%, var(--poster-accent-2-soft), transparent 25%),
+        linear-gradient(115deg, transparent 0 46%, rgba(255,255,255,.025) 46.2% 46.5%, transparent 46.7% 100%);
+      opacity: .92;
+    }
+
+    .poster-inner {
+      position: relative;
+      z-index: 1;
+      padding: 38px 48px 30px;
+    }
+
+    .poster-header {
+      min-height: 48px;
+    }
+
+    .poster-brand {
+      gap: 11px;
+      font-family: "Orbitron", "Exo 2", sans-serif;
+      font-size: 15px;
+      letter-spacing: .17em;
+      color: rgba(255,255,255,.9);
+    }
+
+    .poster-brand-logo {
+      width: 44px;
+      height: 44px;
+      filter: drop-shadow(0 0 16px var(--poster-accent-shadow));
+    }
+
+    .page-index {
+      min-width: 92px;
+      padding: 10px 15px;
+      border-color: rgba(255,255,255,.14);
+      background: linear-gradient(135deg, rgba(255,255,255,.09), rgba(255,255,255,.035));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+      font-family: "Orbitron", "Exo 2", sans-serif;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .poster-main {
+      position: relative;
+      padding-top: 23px;
+    }
+
+    .poster-kicker {
+      margin-bottom: 7px;
+      font-size: 17px;
+      letter-spacing: .18em;
+      text-shadow: 0 0 18px var(--poster-accent-shadow);
+    }
+
+    .poster-title {
+      max-width: 900px;
+      font-size: 68px;
+      line-height: .98;
+      letter-spacing: -.045em;
+      text-wrap: balance;
+      text-shadow: 0 8px 28px rgba(0,0,0,.22);
+    }
+
+    .poster-subtitle {
+      max-width: 900px;
+      margin-top: 10px;
+      color: rgba(247,249,255,.78);
+      font-size: 21px;
+      line-height: 1.23;
+      font-weight: 650;
+      text-wrap: pretty;
+    }
+
+    .poster-footer {
+      padding-top: 14px;
+      border-top-color: rgba(255,255,255,.12);
+      color: rgba(255,255,255,.67);
+      font-size: 15px;
+      line-height: 1.2;
+    }
+
+    /* Наказания */
+    .penalty-grid {
+      gap: 11px;
+      margin-top: 17px;
+    }
+
+    .penalty-card {
+      position: relative;
+      grid-template-columns: 158px minmax(0, 1fr) 226px;
+      grid-template-rows: auto auto 1fr auto;
+      column-gap: 16px;
+      min-height: 0;
+      padding: 15px 16px 15px 21px;
+      border: 1px solid var(--level-border);
+      border-radius: 21px;
+      background:
+        linear-gradient(105deg, var(--level-soft), transparent 28%),
+        linear-gradient(180deg, var(--poster-card-strong), var(--poster-card));
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.055),
+        0 10px 28px rgba(0,0,0,.12);
+    }
+
+    .penalty-card::before {
+      inset: 15px auto 15px 0;
+      width: 5px;
+      height: auto;
+      border-radius: 0 999px 999px 0;
+      background: var(--level-color);
+      box-shadow: 0 0 20px var(--level-glow);
+    }
+
+    .penalty-card::after {
+      content: "";
+      position: absolute;
+      right: 244px;
+      top: 16px;
+      bottom: 16px;
+      width: 1px;
+      pointer-events: none;
+      background: linear-gradient(to bottom, transparent, rgba(255,255,255,.10) 18%, rgba(255,255,255,.10) 82%, transparent);
+    }
+
+    .level-row {
+      grid-column: 1;
+      grid-row: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      gap: 7px;
+      min-width: 0;
+      margin: 0 0 8px;
+    }
+
+    .level-number {
+      font-family: "Orbitron", "Exo 2", sans-serif;
+      font-size: 15px;
+      letter-spacing: .16em;
+    }
+
+    .level-tag {
+      max-width: 100%;
+      padding: 5px 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      font-size: 10.5px;
+      line-height: 1.05;
+      letter-spacing: .055em;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+    }
+
+    .penalty-name {
+      grid-column: 1;
+      grid-row: 2;
+      margin-top: 1px;
+      font-size: 39px;
+      line-height: .95;
+      letter-spacing: -.035em;
+    }
+
+    .penalty-duration {
+      grid-column: 1;
+      grid-row: 3;
+      margin: 7px 0 0;
+      font-size: 19px;
+      line-height: 1.05;
+    }
+
+    .rule-list {
+      grid-column: 2;
+      grid-row: 1 / span 3;
+      align-self: center;
+      gap: 6px;
+      min-width: 0;
+      padding: 2px 6px 2px 1px;
+    }
+
+    .rule-item {
+      grid-template-columns: 11px minmax(0,1fr);
+      gap: 9px;
+      min-width: 0;
+      color: rgba(250,251,255,.94);
+      font-size: 19px;
+      line-height: 1.15;
+      font-weight: 700;
+    }
+
+    .rule-item > span:last-of-type {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .rule-dot {
+      width: 7px;
+      height: 7px;
+      margin-top: 7px;
+      box-shadow: 0 0 11px var(--level-glow);
+    }
+
+    .penalty-card .add-rule {
+      grid-column: 2;
+      grid-row: 4;
+      margin-top: 7px;
+    }
+
+    .card-note {
+      grid-column: 3;
+      grid-row: 1 / span 4;
+      align-self: stretch;
+      min-width: 0;
+      margin: 0;
+      padding: 13px 14px;
+      border-color: var(--level-note-border);
+      border-radius: 16px;
+      background:
+        linear-gradient(145deg, var(--level-note-soft), rgba(255,255,255,.025));
+      color: rgba(255,255,255,.82);
+      font-size: 16px;
+      line-height: 1.23;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    /* Личные фильтры */
+    .filters-intro {
+      position: relative;
+      max-width: none;
+      margin: 18px 0 13px;
+      padding: 17px 20px 17px 24px;
+      border-color: rgba(255,255,255,.12);
+      border-radius: 19px;
+      background:
+        linear-gradient(90deg, var(--poster-accent-soft), transparent 66%),
+        rgba(255,255,255,.035);
+      font-size: 22px;
+      line-height: 1.18;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+    }
+
+    .filters-intro::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 15px;
+      bottom: 15px;
+      width: 4px;
+      border-radius: 0 999px 999px 0;
+      background: var(--poster-accent);
+      box-shadow: 0 0 15px var(--poster-accent-shadow);
+    }
+
+    .filter-chips {
+      gap: 7px;
+      margin-bottom: 13px;
+    }
+
+    .filter-chip {
+      padding: 8px 34px 8px 14px;
+      border-color: rgba(255,255,255,.11);
+      background: linear-gradient(135deg, rgba(255,255,255,.075), rgba(255,255,255,.035));
+      font-size: 16px;
+      line-height: 1;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+    }
+
+    .filter-add {
+      min-height: 36px;
+      font-size: 13px;
+    }
+
+    .bot-callout {
+      position: relative;
+      grid-template-columns: 64px minmax(0,1fr) 218px;
+      gap: 15px;
+      padding: 14px 16px;
+      overflow: hidden;
+      border-color: var(--poster-accent-border);
+      border-radius: 19px;
+      background:
+        radial-gradient(circle at 5% 50%, var(--poster-accent-soft), transparent 25%),
+        linear-gradient(120deg, rgba(255,255,255,.055), rgba(255,255,255,.025));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.07);
+    }
+
+    .bot-callout::after {
+      content: "";
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      right: -95px;
+      top: -92px;
+      border: 1px solid var(--poster-accent-border);
+      border-radius: 50%;
+      box-shadow: 0 0 0 25px var(--poster-accent-soft), 0 0 0 52px var(--poster-accent-2-soft);
+      pointer-events: none;
+    }
+
+    .bot-icon {
+      width: 64px;
+      height: 64px;
+      padding: 2px;
+      border-radius: 18px;
+      box-shadow: 0 8px 26px var(--poster-accent-soft);
+    }
+
+    .bot-avatar {
+      border-radius: 15px;
+    }
+
+    .bot-copy small {
+      margin-bottom: 3px;
+      font-size: 14px;
+      letter-spacing: .03em;
+    }
+
+    .bot-copy strong {
+      font-size: 22px;
+      line-height: 1.08;
+    }
+
+    .bot-path {
+      max-width: 218px;
+      padding: 9px 11px;
+      border: 1px solid var(--poster-accent-border);
+      border-radius: 13px;
+      background: var(--poster-accent-soft);
+      font-size: 15px;
+      line-height: 1.15;
+      text-align: left;
+    }
+
+    .steps-grid {
+      position: relative;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .step-card {
+      position: relative;
+      grid-template-columns: 58px 210px minmax(0, 1fr);
+      gap: 13px;
+      min-height: 0;
+      padding: 13px 17px;
+      overflow: hidden;
+      border-color: rgba(255,255,255,.10);
+      border-radius: 17px;
+      background:
+        linear-gradient(100deg, var(--poster-accent-soft), transparent 20%),
+        rgba(255,255,255,.033);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.045);
+    }
+
+    .step-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 12px;
+      bottom: 12px;
+      width: 3px;
+      border-radius: 0 999px 999px 0;
+      background: var(--poster-accent);
+      opacity: .65;
+    }
+
+    .step-number {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      margin: 0;
+      border: 1px solid var(--poster-accent-border);
+      border-radius: 14px;
+      background: var(--poster-accent-soft);
+      font-family: "Orbitron", "Exo 2", sans-serif;
+      font-size: 13px;
+      letter-spacing: .08em;
+    }
+
+    .step-card h3 {
+      font-size: 21px;
+      line-height: 1.08;
+    }
+
+    .step-card p {
+      color: rgba(255,255,255,.75);
+      font-size: 18px;
+      line-height: 1.16;
+      font-weight: 650;
+    }
+
+    /* Важно */
+    .scope-banner {
+      position: relative;
+      gap: 13px;
+      margin: 18px 0 12px;
+      padding: 14px 17px;
+      overflow: hidden;
+      border-color: var(--poster-accent-border);
+      border-radius: 18px;
+      background:
+        linear-gradient(90deg, var(--poster-accent-soft), transparent 75%),
+        rgba(255,255,255,.028);
+      font-size: 19px;
+      line-height: 1.16;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.055);
+    }
+
+    .scope-badge {
+      padding: 7px 10px;
+      border-radius: 11px;
+      font-size: 12px;
+      box-shadow: 0 6px 18px var(--poster-accent-soft);
+    }
+
+    .outside-card {
+      position: relative;
+      padding: 16px 18px 17px 21px;
+      overflow: hidden;
+      border-color: rgba(255,255,255,.11);
+      border-radius: 18px;
+      background:
+        linear-gradient(100deg, rgba(255,255,255,.045), transparent 45%),
+        var(--poster-card-strong);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.045);
+    }
+
+    .outside-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 15px;
+      bottom: 15px;
+      width: 4px;
+      border-radius: 0 999px 999px 0;
+      background: var(--poster-accent-2);
+      box-shadow: 0 0 16px var(--poster-accent-shadow);
+    }
+
+    .outside-card small {
+      margin-bottom: 6px;
+      font-size: 14px;
+      letter-spacing: .1em;
+    }
+
+    .outside-card p {
+      font-size: 20px;
+      line-height: 1.18;
+      font-weight: 680;
+    }
+
+    .important-list {
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin: 11px 0;
+    }
+
+    .important-item {
+      position: relative;
+      grid-template-columns: 42px minmax(0,1fr);
+      gap: 12px;
+      min-height: 76px;
+      padding: 12px 14px;
+      overflow: hidden;
+      border-color: rgba(255,255,255,.10);
+      border-radius: 17px;
+      background: linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,.025));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+    }
+
+    .important-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      font-size: 19px;
+      box-shadow: 0 7px 20px var(--poster-accent-soft);
+    }
+
+    .important-item p {
+      min-width: 0;
+      font-size: 18px;
+      line-height: 1.14;
+      font-weight: 720;
+      overflow-wrap: anywhere;
+    }
+
+    .appeal-card {
+      position: relative;
+      gap: 14px;
+      padding: 14px 17px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.46);
+      border-radius: 18px;
+      background: linear-gradient(115deg, var(--poster-accent), #fff 135%);
+      box-shadow: 0 10px 28px var(--poster-accent-soft), inset 0 1px 0 rgba(255,255,255,.4);
+    }
+
+    .appeal-card::after {
+      content: "";
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      right: -55px;
+      bottom: -78px;
+      border: 1px solid rgba(6,16,26,.10);
+      border-radius: 50%;
+      box-shadow: 0 0 0 24px rgba(6,16,26,.035);
+      pointer-events: none;
+    }
+
+    .appeal-card small {
+      margin-bottom: 3px;
+      font-size: 13px;
+    }
+
+    .appeal-card strong {
+      font-size: 22px;
+      line-height: 1.08;
+    }
+
+    .appeal-link {
+      position: relative;
+      z-index: 1;
+      padding: 10px 12px;
+      border-width: 1px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.18);
+      font-size: 15px;
+    }
+
+    /* Надёжное поведение длинного редактируемого текста */
+    .penalty-card *,
+    .bot-callout *,
+    .step-card *,
+    .scope-banner *,
+    .outside-card *,
+    .important-item *,
+    .appeal-card * {
+      min-width: 0;
+    }
+
+    [contenteditable="true"] {
+      overflow-wrap: anywhere;
+    }
+
+    /* Сам редактор тоже делаем визуально чище */
+    .app-header {
+      border-bottom-color: rgba(255,255,255,.08);
+      background: rgba(7,9,22,.78);
+      box-shadow: 0 10px 35px rgba(0,0,0,.16);
+    }
+
+    .control-panel {
+      background:
+        radial-gradient(circle at 12% 0%, rgba(255,116,216,.075), transparent 24%),
+        #090c18;
+    }
+
+    .page-button.active {
+      border-color: rgba(255,116,216,.28);
+      background: linear-gradient(135deg, rgba(255,116,216,.12), rgba(140,112,255,.09));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+    }
+
+    .workspace {
+      background:
+        radial-gradient(circle at 50% 10%, rgba(255,116,216,.055), transparent 30%),
+        linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px),
+        #070a14;
+      background-size: auto, 30px 30px, 30px 30px, auto;
+    }
+
+    .poster-stage {
+      border-radius: 42px;
+      box-shadow: 0 26px 80px rgba(0,0,0,.42), 0 0 0 1px rgba(255,255,255,.06);
+    }
+
+    @media (max-width: 760px) {
+      .poster-stage,
+      .poster {
+        border-radius: 28px;
+      }
+    }
+
   </style>
 </head>
 <body>
