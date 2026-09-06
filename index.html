@@ -3691,31 +3691,43 @@
       font-size: 15px;
     }
 
-    /* ===== Adaptive text fill v8 ===== */
-    /* Короткий текст становится крупнее. При переполнении JS плавно уменьшает его. */
-    .poster-brand { font-size: 17px; }
-    .page-index { font-size: 16px; }
-    .poster-footer { font-size: 17px; }
+    /* ===== Adaptive text fill v9 ===== */
+    /* Базовый текст крупный. JS уменьшает только тот блок, который реально перестал помещаться. */
+    .poster-brand { font-size: 19px; }
+    .page-index { font-size: 18px; }
+    .poster-footer { font-size: 19px; }
 
-    .poster-main-penalties .penalty-name { font-size: 44px; }
-    .poster-main-penalties .penalty-duration { font-size: 21px; }
-    .poster-main-penalties .level-number { font-size: 16px; }
-    .poster-main-penalties .level-tag { font-size: 11px; }
+    .poster-main-penalties .penalty-name { font-size: 48px; }
+    .poster-main-penalties .penalty-duration { font-size: 26px; }
+    .poster-main-penalties .level-number { font-size: 18px; }
+    .poster-main-penalties .level-tag { font-size: 13px; }
+    .poster-main-penalties .rule-item { font-size: 28px; line-height: 1.16; }
+    .poster-main-penalties .card-note { font-size: 26px; line-height: 1.18; }
 
     .poster-main-penalties .rule-list {
       align-self: stretch;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      gap: 10px;
     }
 
-    .poster-main-filters .filter-chip { font-size: 17px; }
-    .poster-main-filters .bot-copy small { font-size: 15px; }
-    .poster-main-filters .bot-copy strong { font-size: 24px; }
+    .poster-main-filters .filters-intro { font-size: 29px; line-height: 1.20; }
+    .poster-main-filters .filter-chip { font-size: 20px; }
+    .poster-main-filters .bot-copy small { font-size: 18px; }
+    .poster-main-filters .bot-copy strong { font-size: 29px; line-height: 1.10; }
+    .poster-main-filters .bot-path { font-size: 20px; line-height: 1.15; }
+    .poster-main-filters .step-number { font-size: 17px; }
+    .poster-main-filters .step-card h3 { font-size: 31px; line-height: 1.08; }
+    .poster-main-filters .step-card p { font-size: 27px; line-height: 1.16; }
 
-    .poster-main-important .scope-banner { font-size: 22px; }
-    .poster-main-important .outside-card small { font-size: 15px; }
-    .poster-main-important .appeal-card small { font-size: 15px; }
+    .poster-main-important .scope-banner { font-size: 26px; line-height: 1.16; }
+    .poster-main-important .outside-card small { font-size: 17px; }
+    .poster-main-important .outside-card p { font-size: 31px; line-height: 1.18; }
+    .poster-main-important .important-item p { font-size: 28px; line-height: 1.14; }
+    .poster-main-important .appeal-card small { font-size: 17px; }
+    .poster-main-important .appeal-card strong { font-size: 29px; line-height: 1.08; }
+    .poster-main-important .appeal-link { font-size: 18px; }
 
     .auto-fit-text {
       transition: none !important;
@@ -4639,13 +4651,16 @@
         card.style.setProperty("--level-note-border", hexToRgba(section.color, 0.22));
         card.style.setProperty("--level-note-soft", hexToRgba(section.color, 0.08));
 
+        const penaltyLeft = document.createElement("div");
+        penaltyLeft.className = "penalty-left";
         const levelRow = document.createElement("div");
         levelRow.className = "level-row";
         levelRow.appendChild(editable("span", "level-number", `${path}.number`, section.number));
         levelRow.appendChild(editable("span", "level-tag", `${path}.tag`, section.tag));
-        card.appendChild(levelRow);
-        card.appendChild(editable("h2", "penalty-name", `${path}.name`, section.name));
-        card.appendChild(editable("p", "penalty-duration", `${path}.duration`, section.duration));
+        penaltyLeft.appendChild(levelRow);
+        penaltyLeft.appendChild(editable("h2", "penalty-name", `${path}.name`, section.name));
+        penaltyLeft.appendChild(editable("p", "penalty-duration", `${path}.duration`, section.duration));
+        card.appendChild(penaltyLeft);
 
         const list = document.createElement("ul");
         list.className = "rule-list";
@@ -4959,142 +4974,193 @@
     }
 
     let adaptiveTextFrame = 0;
+    const FIT_TOLERANCE = 1.5;
 
-    function markFitTarget(element) {
-      if (!element) return;
-      element.classList.add("auto-fit-text");
-      if (!element.dataset.fitBaseSize) {
-        const size = Number.parseFloat(getComputedStyle(element).fontSize);
-        if (Number.isFinite(size) && size > 0) element.dataset.fitBaseSize = String(size);
-      }
+    function normalizeFitSpecs(specs) {
+      return (specs || [])
+        .map(spec => ({
+          elements: Array.from(spec.elements || []).filter(Boolean),
+          maxSize: Number(spec.maxSize) || 0,
+          lineHeight: spec.lineHeight || null
+        }))
+        .filter(spec => spec.elements.length && spec.maxSize > 0);
     }
 
-    function setFitScale(elements, scale) {
-      elements.forEach(element => {
-        markFitTarget(element);
-        const base = Number.parseFloat(element.dataset.fitBaseSize || "0");
-        if (base > 0) element.style.fontSize = `${(base * scale).toFixed(3)}px`;
+    function setRegionScale(specs, scale) {
+      specs.forEach(spec => {
+        spec.elements.forEach(element => {
+          element.classList.add("auto-fit-text");
+          element.dataset.fitMaxSize = String(spec.maxSize);
+          element.style.fontSize = `${Math.max(1, spec.maxSize * scale).toFixed(3)}px`;
+          if (spec.lineHeight) element.style.lineHeight = String(spec.lineHeight);
+        });
       });
     }
 
-    function contentOverflows(box, watched = []) {
-      if (!box || box.clientWidth <= 0 || box.clientHeight <= 0) return false;
-      const tolerance = 1.5;
-      if (box.scrollWidth > box.clientWidth + tolerance || box.scrollHeight > box.clientHeight + tolerance) return true;
+    function getFitTargets(specs) {
+      return specs.flatMap(spec => spec.elements);
+    }
 
+    function elementInsideBox(box, element) {
+      if (!box || !element || !element.isConnected || box === element) return true;
       const boxRect = box.getBoundingClientRect();
-      const style = getComputedStyle(box);
-      const left = boxRect.left + (Number.parseFloat(style.paddingLeft) || 0) - tolerance;
-      const right = boxRect.right - (Number.parseFloat(style.paddingRight) || 0) + tolerance;
-      const top = boxRect.top + (Number.parseFloat(style.paddingTop) || 0) - tolerance;
-      const bottom = boxRect.bottom - (Number.parseFloat(style.paddingBottom) || 0) + tolerance;
-
-      return watched.some(element => {
-        if (!element || !element.isConnected) return false;
-        if (element.scrollWidth > element.clientWidth + tolerance || element.scrollHeight > element.clientHeight + tolerance) return true;
-        const rect = element.getBoundingClientRect();
-        return rect.left < left || rect.right > right || rect.top < top || rect.bottom > bottom;
-      });
+      const boxStyle = getComputedStyle(box);
+      const scaleX = box.clientWidth ? boxRect.width / box.clientWidth : 1;
+      const scaleY = box.clientHeight ? boxRect.height / box.clientHeight : 1;
+      const left = boxRect.left + (Number.parseFloat(boxStyle.paddingLeft) || 0) * scaleX - FIT_TOLERANCE;
+      const right = boxRect.right - (Number.parseFloat(boxStyle.paddingRight) || 0) * scaleX + FIT_TOLERANCE;
+      const top = boxRect.top + (Number.parseFloat(boxStyle.paddingTop) || 0) * scaleY - FIT_TOLERANCE;
+      const bottom = boxRect.bottom - (Number.parseFloat(boxStyle.paddingBottom) || 0) * scaleY + FIT_TOLERANCE;
+      const rect = element.getBoundingClientRect();
+      return rect.left >= left && rect.right <= right && rect.top >= top && rect.bottom <= bottom;
     }
 
-    function fitTextInBox(box, elements, minScale = 0.62, maxScale = 1.32) {
+    function regionFits(box, specs) {
+      if (!box || box.clientWidth <= 0 || box.clientHeight <= 0) return true;
+
+      // Обе оси обязательны. Никакого выхода вправо или вниз.
+      if (box.scrollWidth > box.clientWidth + FIT_TOLERANCE) return false;
+      if (box.scrollHeight > box.clientHeight + FIT_TOLERANCE) return false;
+
+      return getFitTargets(specs).every(element => elementInsideBox(box, element));
+    }
+
+    function fitTextRegion(box, rawSpecs, minimumScale = 0.10) {
+      const specs = normalizeFitSpecs(rawSpecs);
+      if (!box || !specs.length || box.clientWidth <= 0 || box.clientHeight <= 0) return;
+
+      // Каждый пересчёт начинается с большого исходного размера.
+      setRegionScale(specs, 1);
+      void box.offsetHeight;
+      if (regionFits(box, specs)) return;
+
+      let floor = Math.max(0.035, Math.min(1, minimumScale));
+      setRegionScale(specs, floor);
+      void box.offsetHeight;
+
+      // Если текста экстремально много, продолжаем уменьшать, чтобы он всё равно остался внутри окна.
+      while (!regionFits(box, specs) && floor > 0.0351) {
+        floor = Math.max(0.035, floor * 0.72);
+        setRegionScale(specs, floor);
+        void box.offsetHeight;
+      }
+
+      if (!regionFits(box, specs)) {
+        setRegionScale(specs, 0.035);
+        return;
+      }
+
+      let low = floor;
+      let high = 1;
+      let best = floor;
+      for (let index = 0; index < 15; index += 1) {
+        const middle = (low + high) / 2;
+        setRegionScale(specs, middle);
+        void box.offsetHeight;
+        if (regionFits(box, specs)) {
+          best = middle;
+          low = middle;
+        } else {
+          high = middle;
+        }
+      }
+      setRegionScale(specs, Math.max(floor, best - 0.004));
+    }
+
+    // Совместимость с остальным кодом. В новых вызовах используются явные максимальные размеры.
+    function fitTextInBox(box, elements, minScale = 0.10, maxScale = 1) {
       const targets = Array.from(elements || []).filter(Boolean);
       if (!box || !targets.length) return;
-
-      targets.forEach(markFitTarget);
-      setFitScale(targets, 1);
-
-      let low = minScale;
-      let high = maxScale;
-      let best = minScale;
-
-      setFitScale(targets, minScale);
-      if (contentOverflows(box, targets)) return;
-
-      for (let index = 0; index < 11; index += 1) {
-        const middle = (low + high) / 2;
-        setFitScale(targets, middle);
-        if (contentOverflows(box, targets)) {
-          high = middle;
-        } else {
-          best = middle;
-          low = middle;
-        }
-      }
-
-      setFitScale(targets, Math.max(minScale, best - 0.012));
-    }
-
-    function fitSelfText(element, minScale = 0.62, maxScale = 1.32) {
-      if (!element) return;
-      markFitTarget(element);
-      setFitScale([element], minScale);
-      if (element.scrollHeight > element.clientHeight + 1.5 || element.scrollWidth > element.clientWidth + 1.5) return;
-
-      let low = minScale;
-      let high = maxScale;
-      let best = minScale;
-      for (let index = 0; index < 11; index += 1) {
-        const middle = (low + high) / 2;
-        setFitScale([element], middle);
-        const overflow = element.scrollHeight > element.clientHeight + 1.5 || element.scrollWidth > element.clientWidth + 1.5;
-        if (overflow) high = middle;
-        else {
-          best = middle;
-          low = middle;
-        }
-      }
-      setFitScale([element], Math.max(minScale, best - 0.012));
+      const specs = targets.map(element => {
+        const stored = Number.parseFloat(element.dataset.fitMaxSize || "0");
+        const computed = Number.parseFloat(getComputedStyle(element).fontSize || "0");
+        return { elements: [element], maxSize: stored || (computed / Math.max(maxScale, 0.001)) };
+      });
+      fitTextRegion(box, specs, minScale);
     }
 
     function fitAdaptiveText() {
       if (!poster?.isConnected) return;
       const main = poster.querySelector(".poster-main");
       if (!main) return;
-
       const pageId = state.pages[state.activePage]?.id;
 
       if (pageId === "penalties") {
-        poster.querySelectorAll(".penalty-card").forEach(card => {
+        main.querySelectorAll(".penalty-card").forEach(card => {
+          const left = card.querySelector(".penalty-left");
+          if (left) {
+            fitTextRegion(left, [
+              { elements: left.querySelectorAll(".level-number"), maxSize: 18, lineHeight: 1.05 },
+              { elements: left.querySelectorAll(".level-tag"), maxSize: 13, lineHeight: 1.05 },
+              { elements: left.querySelectorAll(".penalty-name"), maxSize: 52, lineHeight: 0.94 },
+              { elements: left.querySelectorAll(".penalty-duration"), maxSize: 27, lineHeight: 1.08 }
+            ], 0.18);
+          }
+
           const list = card.querySelector(".rule-list");
-          fitTextInBox(list, list?.querySelectorAll(".rule-item"), 0.60, 1.34);
-          fitSelfText(card.querySelector(".card-note"), 0.58, 1.34);
-          fitTextInBox(card, card.querySelectorAll(".level-number, .level-tag, .penalty-name, .penalty-duration"), 0.72, 1.16);
+          if (list) {
+            fitTextRegion(list, [
+              { elements: list.querySelectorAll(".rule-item"), maxSize: 31, lineHeight: 1.13 }
+            ], 0.12);
+          }
+
+          const note = card.querySelector(".card-note");
+          if (note) {
+            fitTextRegion(note, [
+              { elements: [note], maxSize: 25, lineHeight: 1.16 }
+            ], 0.14);
+          }
         });
       }
 
       if (pageId === "filters") {
-        fitTextInBox(
-          main,
-          main.querySelectorAll(".filters-intro, .filter-chip, .bot-copy small, .bot-copy strong, .bot-path"),
-          0.68,
-          1.20
-        );
+        const intro = main.querySelector(".filters-intro");
+        if (intro) fitTextRegion(intro, [{ elements: [intro], maxSize: 32, lineHeight: 1.14 }], 0.14);
+
+        const callout = main.querySelector(".bot-callout");
+        if (callout) {
+          fitTextRegion(callout, [
+            { elements: callout.querySelectorAll(".bot-copy small"), maxSize: 19, lineHeight: 1.08 },
+            { elements: callout.querySelectorAll(".bot-copy strong"), maxSize: 32, lineHeight: 1.05 },
+            { elements: callout.querySelectorAll(".bot-path"), maxSize: 21, lineHeight: 1.12 }
+          ], 0.14);
+        }
+
         main.querySelectorAll(".step-card").forEach(card => {
-          fitTextInBox(card, card.querySelectorAll("h3, p"), 0.58, 1.38);
+          fitTextRegion(card, [
+            { elements: card.querySelectorAll("h3"), maxSize: 39, lineHeight: 1.02 },
+            { elements: card.querySelectorAll("p"), maxSize: 31, lineHeight: 1.10 }
+          ], 0.10);
         });
       }
 
       if (pageId === "important") {
-        const outside = main.querySelector(".outside-card");
-        fitTextInBox(outside, outside?.querySelectorAll("small, p"), 0.58, 1.34);
-        main.querySelectorAll(".important-item").forEach(card => {
-          fitTextInBox(card, card.querySelectorAll("p"), 0.58, 1.42);
-        });
-        fitTextInBox(
-          main,
-          main.querySelectorAll(".scope-banner, .appeal-card small, .appeal-card strong, .appeal-link"),
-          0.66,
-          1.22
-        );
-      }
+        const scope = main.querySelector(".scope-banner");
+        if (scope) fitTextRegion(scope, [{ elements: scope.querySelectorAll("[data-path]"), maxSize: 29, lineHeight: 1.12 }], 0.14);
 
-      fitTextInBox(
-        main,
-        [main.querySelector(".poster-kicker"), main.querySelector(".poster-title"), main.querySelector(".poster-subtitle")],
-        0.72,
-        1.15
-      );
+        const outside = main.querySelector(".outside-card");
+        if (outside) {
+          fitTextRegion(outside, [
+            { elements: outside.querySelectorAll("small"), maxSize: 19, lineHeight: 1.08 },
+            { elements: outside.querySelectorAll("p"), maxSize: 38, lineHeight: 1.10 }
+          ], 0.08);
+        }
+
+        main.querySelectorAll(".important-item").forEach(card => {
+          fitTextRegion(card, [
+            { elements: card.querySelectorAll("p"), maxSize: 32, lineHeight: 1.10 }
+          ], 0.08);
+        });
+
+        const appeal = main.querySelector(".appeal-card");
+        if (appeal) {
+          fitTextRegion(appeal, [
+            { elements: appeal.querySelectorAll("small"), maxSize: 18, lineHeight: 1.08 },
+            { elements: appeal.querySelectorAll("strong"), maxSize: 34, lineHeight: 1.04 },
+            { elements: appeal.querySelectorAll(".appeal-link"), maxSize: 19, lineHeight: 1.08 }
+          ], 0.10);
+        }
+      }
     }
 
     function scheduleAdaptiveTextFit() {
@@ -6529,5 +6595,470 @@
     document.getElementById("portalSwitcherBtn").addEventListener("click", () => showPortalView("home"));
     showPortalView("home");
   </script>
+
+<style id="v10-very-big-top">
+  /* v10. Очень крупный текст и старт сверху вниз. */
+  .poster-main-penalties .penalty-card {
+    align-items: start;
+  }
+
+  .poster-main-penalties .rule-list {
+    align-self: start;
+    gap: 10px;
+    padding-top: 2px;
+  }
+
+  .poster-main-penalties .rule-item {
+    font-size: 21px;
+    line-height: 1.18;
+  }
+
+  .poster-main-penalties .card-note {
+    align-items: flex-start;
+    font-size: 18px;
+    line-height: 1.2;
+  }
+
+  .poster-main-filters .filters-intro {
+    align-items: flex-start;
+    min-height: 74px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-size: 24px;
+    line-height: 1.18;
+  }
+
+  .poster-main-filters .bot-callout {
+    align-items: start;
+    min-height: 110px;
+  }
+
+  .poster-main-filters .bot-copy small {
+    font-size: 16px;
+  }
+
+  .poster-main-filters .bot-copy strong {
+    font-size: 26px;
+    line-height: 1.08;
+  }
+
+  .poster-main-filters .bot-path {
+    font-size: 18px;
+    line-height: 1.15;
+  }
+
+  .poster-main-filters .steps-grid {
+    gap: 12px;
+  }
+
+  .poster-main-filters .step-card {
+    grid-template-columns: 56px minmax(0, 1fr);
+    grid-template-areas:
+      "num title"
+      "num text";
+    align-items: start;
+    align-content: start;
+    row-gap: 8px;
+    column-gap: 16px;
+    padding: 18px 20px;
+    min-height: 0;
+  }
+
+  .poster-main-filters .step-card::before {
+    top: 14px;
+    bottom: 14px;
+  }
+
+  .poster-main-filters .step-number {
+    grid-area: num;
+    align-self: start;
+    width: 44px;
+    height: 44px;
+    margin: 0;
+    font-size: 14px;
+  }
+
+  .poster-main-filters .step-card h3 {
+    grid-area: title;
+    align-self: start;
+    margin: 0;
+    font-size: 30px;
+    line-height: 1.05;
+  }
+
+  .poster-main-filters .step-card p {
+    grid-area: text;
+    align-self: start;
+    margin: 0;
+    font-size: 24px;
+    line-height: 1.14;
+    font-weight: 700;
+  }
+
+  .poster-main-important .scope-banner {
+    align-items: flex-start;
+    min-height: 72px;
+    padding-top: 18px;
+    padding-bottom: 18px;
+    font-size: 24px;
+    line-height: 1.18;
+  }
+
+  .poster-main-important .scope-badge {
+    margin-top: 1px;
+  }
+
+  .poster-main-important .outside-card {
+    justify-content: flex-start;
+    min-height: 156px;
+    padding-top: 22px;
+    padding-bottom: 20px;
+  }
+
+  .poster-main-important .outside-card small {
+    font-size: 15px;
+    line-height: 1.15;
+  }
+
+  .poster-main-important .outside-card p {
+    font-size: 26px;
+    line-height: 1.18;
+  }
+
+  .poster-main-important .important-list {
+    align-items: stretch;
+    min-height: 130px;
+  }
+
+  .poster-main-important .important-item {
+    align-items: start;
+    align-content: start;
+    min-height: 118px;
+    padding: 16px 18px;
+  }
+
+  .poster-main-important .important-icon {
+    margin-top: 2px;
+  }
+
+  .poster-main-important .important-item p {
+    align-self: start;
+    margin: 0;
+    font-size: 24px;
+    line-height: 1.14;
+  }
+
+  .poster-main-important .appeal-card {
+    align-items: start;
+    min-height: 118px;
+    padding-top: 18px;
+    padding-bottom: 18px;
+  }
+
+  .poster-main-important .appeal-card small {
+    font-size: 15px;
+  }
+
+  .poster-main-important .appeal-card strong {
+    font-size: 29px;
+    line-height: 1.08;
+  }
+
+  .poster-main-important .appeal-link {
+    align-self: start;
+    font-size: 18px;
+  }
+</style>
+
+
+
+<style id="v13-strict-autofit">
+  /* Крупный стартовый текст. Все редактируемые строки переносятся внутри своей области. */
+  .poster [data-path] {
+    min-width: 0;
+    max-width: 100%;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+  }
+
+  .poster-main-penalties .penalty-card,
+  .poster-main-penalties .penalty-left,
+  .poster-main-penalties .rule-list,
+  .poster-main-penalties .card-note,
+  .poster-main-filters .filters-intro,
+  .poster-main-filters .bot-callout,
+  .poster-main-filters .step-card,
+  .poster-main-important .scope-banner,
+  .poster-main-important .outside-card,
+  .poster-main-important .important-item,
+  .poster-main-important .appeal-card {
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* Наказания. Три независимые области: левая колонка, список, пояснение. */
+  .poster-main-penalties .penalty-card {
+    grid-template-columns: 158px minmax(0, 1fr) 220px;
+    grid-template-rows: minmax(0, 1fr) auto;
+    align-items: stretch;
+    align-content: stretch;
+  }
+
+  .poster-main-penalties .penalty-left {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    align-self: stretch;
+    width: 100%;
+    height: 100%;
+  }
+
+  .poster-main-penalties .penalty-left .level-row {
+    width: 100%;
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
+
+  .poster-main-penalties .penalty-left .penalty-name,
+  .poster-main-penalties .penalty-left .penalty-duration {
+    align-self: flex-start;
+    max-width: 100%;
+  }
+
+  .poster-main-penalties .penalty-name { font-size: 52px; line-height: .94; }
+  .poster-main-penalties .penalty-duration { font-size: 27px; line-height: 1.08; }
+
+  .poster-main-penalties .rule-list {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: stretch;
+    justify-self: stretch;
+    align-content: start;
+    justify-content: start;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    gap: 8px;
+    padding: 1px 0 0;
+  }
+
+  .poster-main-penalties .rule-item {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow: visible;
+    grid-template-columns: .32em minmax(0, 1fr);
+    gap: .34em;
+    font-size: 31px;
+    line-height: 1.13;
+    font-weight: 760;
+  }
+
+  .poster-main-penalties .rule-dot {
+    width: .25em;
+    height: .25em;
+    margin-top: .38em;
+  }
+
+  .poster-main-penalties .rule-item > [data-path] {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .poster-main-penalties .remove-rule {
+    top: 1px;
+    right: 1px;
+  }
+
+  .poster-main-penalties .penalty-card .add-rule {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: end;
+    margin-top: 8px;
+  }
+
+  .poster-main-penalties .card-note {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    align-self: stretch;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-top: 17px;
+    font-size: 25px;
+    line-height: 1.16;
+  }
+
+  /* Личные фильтры. В каждой карточке текст начинается сверху. */
+  .poster-main-filters .filters-intro {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-top: 18px;
+    font-size: 32px;
+    line-height: 1.14;
+  }
+
+  .poster-main-filters .bot-callout {
+    align-items: start;
+    align-content: start;
+  }
+
+  .poster-main-filters .bot-copy,
+  .poster-main-filters .bot-path {
+    min-width: 0;
+    max-width: 100%;
+    align-self: start;
+  }
+
+  .poster-main-filters .bot-copy small { font-size: 19px; line-height: 1.08; }
+  .poster-main-filters .bot-copy strong { font-size: 32px; line-height: 1.05; }
+  .poster-main-filters .bot-path { font-size: 21px; line-height: 1.12; }
+
+  .poster-main-filters .step-card {
+    grid-template-columns: 58px minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas: "num title" "num text";
+    align-items: start;
+    align-content: start;
+    justify-items: stretch;
+    row-gap: 8px;
+    column-gap: 18px;
+    padding: 20px 22px;
+  }
+
+  .poster-main-filters .step-number {
+    grid-area: num;
+    align-self: start;
+    justify-self: start;
+    width: 52px;
+    height: 52px;
+    margin: 0;
+    font-size: 17px;
+  }
+
+  .poster-main-filters .step-card h3 {
+    grid-area: title;
+    align-self: start;
+    margin: 0;
+    min-width: 0;
+    max-width: 100%;
+    font-size: 39px;
+    line-height: 1.02;
+    font-weight: 920;
+  }
+
+  .poster-main-filters .step-card p {
+    grid-area: text;
+    align-self: start;
+    margin: 0;
+    min-width: 0;
+    max-width: 100%;
+    font-size: 31px;
+    line-height: 1.10;
+    font-weight: 720;
+  }
+
+  /* Что важно знать. Каждое фиолетовое окно рассчитывается отдельно. */
+  .poster-main-important .scope-banner {
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-top: 17px;
+    font-size: 29px;
+    line-height: 1.12;
+  }
+
+  .poster-main-important .scope-banner > [data-path] {
+    flex: 1 1 auto;
+  }
+
+  .poster-main-important .outside-card {
+    justify-content: flex-start;
+    align-items: stretch;
+    align-content: start;
+    padding: 24px 26px;
+  }
+
+  .poster-main-important .outside-card small {
+    margin-bottom: 10px;
+    font-size: 19px;
+    line-height: 1.08;
+  }
+
+  .poster-main-important .outside-card p {
+    margin: 0;
+    font-size: 38px;
+    line-height: 1.10;
+    font-weight: 790;
+  }
+
+  .poster-main-important .important-list { align-items: stretch; }
+
+  .poster-main-important .important-item {
+    align-items: start;
+    align-content: start;
+    grid-template-columns: 52px minmax(0, 1fr);
+    gap: 16px;
+    padding: 20px 21px;
+  }
+
+  .poster-main-important .important-icon {
+    align-self: start;
+    margin: 0;
+    width: 52px;
+    height: 52px;
+  }
+
+  .poster-main-important .important-item p {
+    align-self: start;
+    margin: 0;
+    font-size: 32px;
+    line-height: 1.10;
+    font-weight: 780;
+  }
+
+  .poster-main-important .appeal-card {
+    align-items: start;
+    align-content: start;
+    padding-top: 19px;
+  }
+
+  .poster-main-important .appeal-card > div {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .poster-main-important .appeal-card small { font-size: 18px; line-height: 1.08; }
+  .poster-main-important .appeal-card strong { font-size: 34px; line-height: 1.04; }
+  .poster-main-important .appeal-link { align-self: start; font-size: 19px; line-height: 1.08; }
+
+  /* При экспорте contenteditable удаляется, но переносы должны остаться. */
+  .poster.export-clean [data-path] {
+    min-width: 0;
+    max-width: 100%;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+  }
+</style>
+<script id="v13-fit-bootstrap">
+  (() => {
+    const run = () => {
+      if (typeof fitAdaptiveText === "function") fitAdaptiveText();
+    };
+    requestAnimationFrame(run);
+    if (document.fonts?.ready) document.fonts.ready.then(run).catch(() => {});
+  })();
+</script>
+
+
 </body>
 </html>
