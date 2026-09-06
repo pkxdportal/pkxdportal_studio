@@ -330,7 +330,7 @@
 
     .theme-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 8px;
     }
 
@@ -370,6 +370,10 @@
 
     .theme-dot.ice {
       background: linear-gradient(135deg, #9eeaff, #2985ff);
+    }
+
+    .theme-dot.neon {
+      background: linear-gradient(135deg, #b7ff63, #22e88f);
     }
 
     .field-label {
@@ -693,6 +697,21 @@
       --poster-accent-2-soft: rgba(58, 146, 255, 0.1);
       --glow-1: rgba(96, 220, 255, 0.25);
       --glow-2: rgba(38, 124, 255, 0.28);
+    }
+
+    .poster.theme-neon {
+      --poster-bg: #06150f;
+      --poster-accent: #b7ff63;
+      --poster-accent-2: #22e88f;
+      --poster-card: rgba(12, 49, 35, 0.86);
+      --poster-card-strong: rgba(14, 62, 43, 0.92);
+      --poster-line: rgba(180, 255, 139, 0.22);
+      --poster-accent-soft: rgba(183, 255, 99, 0.11);
+      --poster-accent-border: rgba(183, 255, 99, 0.36);
+      --poster-accent-shadow: rgba(91, 255, 157, 0.42);
+      --poster-accent-2-soft: rgba(34, 232, 143, 0.11);
+      --glow-1: rgba(183, 255, 99, 0.24);
+      --glow-2: rgba(34, 232, 143, 0.30);
     }
 
     .poster-inner {
@@ -3733,6 +3752,13 @@
       --export-line: rgba(173, 234, 255, .22);
     }
 
+    .poster.export-clean.theme-neon {
+      --export-card: #123426;
+      --export-card-2: #17422f;
+      --export-chip: #1d4d38;
+      --export-line: rgba(190, 255, 145, .24);
+    }
+
     .poster.export-clean::after,
     .poster.export-clean .poster-noise {
       display: none !important;
@@ -3967,6 +3993,10 @@
             <button class="theme-button" type="button" data-theme="ice">
               <span class="theme-dot ice"></span>
               Лёд
+            </button>
+            <button class="theme-button" type="button" data-theme="neon">
+              <span class="theme-dot neon"></span>
+              Неон
             </button>
           </div>
 
@@ -4284,7 +4314,7 @@
 
     function normalizeState(value) {
       const normalized = clone(value);
-      const allowedThemes = ["portal", "ember", "ice"];
+      const allowedThemes = ["portal", "ember", "ice", "neon"];
       if (normalized.theme === "electric" || !allowedThemes.includes(normalized.theme)) {
         normalized.theme = "portal";
       }
