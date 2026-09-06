@@ -1,1258 +1,2213 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PK XD Portal — Конструктор правил</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#070916">
+  <title>PK XD PORTAL. Студия правил</title>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-
   <style>
     :root {
-      --white: #ffffff;
-      --muted: rgba(255,255,255,0.78);
-      --line: rgba(255,255,255,0.18);
-      --panel-top: rgba(80, 205, 255, 0.35);
-      --panel-bottom: rgba(35, 75, 185, 0.42);
-      --main-top: rgba(105, 225, 255, 0.28);
-      --main-bottom: rgba(35, 60, 170, 0.42);
-      --shadow: 0 24px 80px rgba(0,0,0,0.30);
-      --soft-shadow: 0 14px 40px rgba(0,0,0,0.20);
-      --text-shadow: 0 3px 14px rgba(0,0,0,0.25);
-      --ui-bg: rgba(255,255,255,0.12);
-      --ui-hover: rgba(255,255,255,0.20);
-      --ui-border: rgba(255,255,255,0.14);
+      color-scheme: dark;
+      --app-bg: #070916;
+      --panel: #0e1121;
+      --panel-2: #14182b;
+      --line: rgba(255, 255, 255, 0.1);
+      --text: #f7f8ff;
+      --muted: #989fb8;
+      --accent: #59e8ff;
+      --accent-2: #7b61ff;
+      --danger: #ff567d;
+      --success: #68efb0;
+      --radius: 20px;
+      --shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
-    html, body {
+    html,
+    body {
       margin: 0;
       min-height: 100%;
-      font-family: Inter, Arial, sans-serif;
-      background: #07142d;
-      color: var(--white);
+      background: var(--app-bg);
+      color: var(--text);
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
     }
 
-    body {
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    .app {
+      min-height: 100vh;
       display: grid;
-      grid-template-columns: 330px minmax(320px, 1fr);
-      gap: 16px;
-      padding: 16px;
-      align-items: start;
-      overflow-x: auto;
+      grid-template-rows: 72px 1fr;
     }
 
-    .sidebar {
+    .app-header {
       position: sticky;
-      top: 16px;
-      z-index: 10000;
-      min-width: 310px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 22px;
-      padding: 14px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-      max-height: calc(100vh - 32px);
-      overflow: auto;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(7, 9, 22, 0.88);
+      backdrop-filter: blur(18px);
     }
 
-    .sidebar h1 {
-      margin: 0 0 8px;
-      font-size: 22px;
-      line-height: 1.05;
-      font-weight: 1000;
+    .brand {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    .sidebar p {
-      margin: 0 0 14px;
-      font-size: 13px;
-      line-height: 1.35;
-      color: var(--muted);
-    }
-
-    .group {
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      flex: 0 0 auto;
       display: grid;
-      gap: 10px;
-      margin-bottom: 14px;
-      padding-bottom: 14px;
-      border-bottom: 1px solid rgba(255,255,255,0.10);
-    }
-
-    .group:last-child {
-      margin-bottom: 0;
-      padding-bottom: 0;
-      border-bottom: none;
-    }
-
-    .group-title {
-      font-size: 13px;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: .4px;
-      color: rgba(255,255,255,0.9);
-    }
-
-    .btn,
-    .file-label,
-    input[type="text"],
-    input[type="color"],
-    textarea,
-    select {
-      width: 100%;
-      border: none;
+      place-items: center;
       border-radius: 14px;
-      padding: 11px 13px;
+      color: #07101c;
+      background: linear-gradient(135deg, var(--accent), #ffffff 62%, var(--accent-2));
+      box-shadow: 0 0 26px rgba(89, 232, 255, 0.24);
+    }
+
+    .brand-mark svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .brand-copy {
+      min-width: 0;
+    }
+
+    .brand-copy strong,
+    .brand-copy span {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .brand-copy strong {
+      font-size: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-copy span {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .header-actions,
+    .toolbar-group,
+    .button-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .button-row > * {
+      flex: 1;
+    }
+
+    .icon-btn,
+    .action-btn,
+    .ghost-btn,
+    .page-button,
+    .theme-button,
+    .add-rule,
+    .remove-rule {
+      border: 0;
+      cursor: pointer;
+      transition: transform 160ms ease, background 160ms ease, border-color 160ms ease, opacity 160ms ease;
+    }
+
+    .icon-btn:focus-visible,
+    .action-btn:focus-visible,
+    .ghost-btn:focus-visible,
+    .page-button:focus-visible,
+    .theme-button:focus-visible,
+    .add-rule:focus-visible,
+    .remove-rule:focus-visible,
+    [contenteditable="true"]:focus-visible {
+      outline: 3px solid rgba(89, 232, 255, 0.7);
+      outline-offset: 3px;
+    }
+
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: var(--panel-2);
+    }
+
+    .icon-btn:hover:not(:disabled),
+    .ghost-btn:hover:not(:disabled) {
+      background: #1b2036;
+    }
+
+    .icon-btn:active:not(:disabled),
+    .action-btn:active:not(:disabled),
+    .ghost-btn:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.38;
+    }
+
+    .icon-btn svg,
+    .action-btn svg,
+    .ghost-btn svg {
+      width: 19px;
+      height: 19px;
+      flex: 0 0 auto;
+    }
+
+    .action-btn,
+    .ghost-btn {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 0 15px;
+      border-radius: 13px;
       font-size: 14px;
       font-weight: 800;
     }
 
-    .btn,
-    .file-label {
-      cursor: pointer;
-      color: #fff;
-      background: var(--ui-bg);
-      border: 1px solid var(--ui-border);
-      transition: .18s ease;
-      text-align: center;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 44px;
-      user-select: none;
+    .action-btn {
+      color: #07101c;
+      background: linear-gradient(135deg, var(--accent), #e7fcff);
+      box-shadow: 0 10px 30px rgba(89, 232, 255, 0.16);
     }
 
-    .btn:hover,
-    .file-label:hover {
-      background: var(--ui-hover);
+    .action-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 34px rgba(89, 232, 255, 0.24);
     }
 
-    .btn.primary {
-      background: linear-gradient(180deg, rgba(57,223,255,.54), rgba(18,130,255,.38));
-      border-color: rgba(112,233,255,.35);
+    .ghost-btn {
+      border: 1px solid var(--line);
+      background: var(--panel-2);
     }
 
-    .btn.active {
-      background: linear-gradient(180deg, rgba(255,235,59,.42), rgba(255,215,0,.24));
-      border-color: rgba(255,255,255,.28);
-    }
-
-    input[type="file"] { display: none; }
-
-    input[type="text"],
-    textarea,
-    select {
-      color: #fff;
-      background: rgba(255,255,255,.10);
-      border: 1px solid rgba(255,255,255,.12);
-      outline: none;
-    }
-
-    input[type="color"] {
-      height: 44px;
-      padding: 6px;
-      background: rgba(255,255,255,.10);
-      border: 1px solid rgba(255,255,255,.12);
-    }
-
-    .row-2 {
+    .main-layout {
+      min-width: 0;
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 320px minmax(0, 1fr);
+    }
+
+    .control-panel {
+      position: sticky;
+      top: 72px;
+      height: calc(100vh - 72px);
+      overflow-y: auto;
+      padding: 18px;
+      border-right: 1px solid var(--line);
+      background: #0a0d1a;
+    }
+
+    .panel-section {
+      padding: 0 0 22px;
+      margin: 0 0 22px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-section:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #cbd0e2;
+    }
+
+    .section-head span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .page-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .page-button {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 38px 1fr 16px;
+      align-items: center;
+      gap: 10px;
+      min-height: 66px;
+      padding: 9px 11px;
+      text-align: left;
+      border: 1px solid transparent;
+      border-radius: 15px;
+      background: transparent;
+    }
+
+    .page-button:hover {
+      background: var(--panel);
+    }
+
+    .page-button.active {
+      border-color: rgba(89, 232, 255, 0.25);
+      background: linear-gradient(135deg, rgba(89, 232, 255, 0.12), rgba(123, 97, 255, 0.08));
+    }
+
+    .page-number {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      color: var(--muted);
+      background: var(--panel-2);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .page-button.active .page-number {
+      color: #06111b;
+      background: var(--accent);
+    }
+
+    .page-button-copy strong,
+    .page-button-copy small {
+      display: block;
+    }
+
+    .page-button-copy strong {
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    .page-button-copy small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .page-chevron {
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .theme-button {
+      display: grid;
+      justify-items: center;
+      gap: 8px;
+      padding: 10px 6px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      color: var(--muted);
+      background: var(--panel);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .theme-button.active {
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.3);
+      background: var(--panel-2);
+    }
+
+    .theme-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 10px;
+      border: 2px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .theme-dot.electric {
+      background: linear-gradient(135deg, #58eaff, #7865ff);
+    }
+
+    .theme-dot.ember {
+      background: linear-gradient(135deg, #ffcf58, #ff4f75);
+    }
+
+    .theme-dot.ice {
+      background: linear-gradient(135deg, #9eeaff, #2985ff);
+    }
+
+    .field-label {
+      display: block;
+      margin: 15px 0 8px;
+      color: #cbd0e2;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .range-row {
+      display: grid;
+      grid-template-columns: 1fr 42px;
+      align-items: center;
       gap: 10px;
     }
 
-    .hint,
-    .status {
-      font-size: 12px;
-      line-height: 1.35;
-      color: rgba(255,255,255,.74);
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
     }
 
-    .status {
-      padding: 10px 12px;
-      border-radius: 12px;
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.10);
-      min-height: 40px;
-      color: rgba(255,255,255,.92);
+    .range-value {
+      color: var(--muted);
+      font-size: 12px;
+      text-align: right;
+    }
+
+    .helper {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
     }
 
     .workspace {
-      display: grid;
-      gap: 12px;
-      justify-items: start;
       min-width: 0;
+      padding: 20px;
+      overflow: hidden;
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        #080b17;
+      background-size: 28px 28px;
     }
 
-    .canvas-wrap {
-      width: fit-content;
-      padding: 10px;
-      border-radius: 22px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.10);
+    .workspace-toolbar {
+      max-width: 1180px;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .toolbar-title strong,
+    .toolbar-title span {
+      display: block;
+    }
+
+    .toolbar-title strong {
+      font-size: 15px;
+    }
+
+    .toolbar-title span {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .scale-pill {
+      min-width: 62px;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      color: var(--muted);
+      background: var(--panel);
+      font-size: 12px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .poster-viewport {
+      width: 100%;
+      min-height: 400px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      overflow: hidden;
+    }
+
+    .poster-stage {
+      position: relative;
+      flex: 0 0 auto;
+      border-radius: 20px;
       box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-      overflow: auto;
-      max-width: calc(100vw - 380px);
     }
 
     .poster {
       position: relative;
-      width: 1280px;
-      min-height: 720px;
+      width: 1080px;
+      height: 1350px;
       overflow: hidden;
-      border-radius: 40px;
+      transform-origin: top left;
+      color: #f8fbff;
+      background: var(--poster-bg, #090b20);
       isolation: isolate;
-      padding: 22px 28px 24px;
-      background: linear-gradient(rgba(6,16,38,0.20), rgba(6,16,38,0.34));
-      box-shadow: 0 30px 100px rgba(0,0,0,0.34);
     }
 
-    .bg-image {
+    .poster::after {
+      content: "";
       position: absolute;
       inset: 0;
+      z-index: -2;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 8% 4%, var(--glow-1, rgba(89, 232, 255, 0.26)), transparent 30%),
+        radial-gradient(circle at 94% 88%, var(--glow-2, rgba(123, 97, 255, 0.28)), transparent 35%),
+        linear-gradient(145deg, transparent 46%, rgba(255, 255, 255, 0.035) 47%, transparent 48%);
+    }
+
+    .poster-bg-image {
+      position: absolute;
+      inset: 0;
+      z-index: -4;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      z-index: -30;
-      display: none;
-      pointer-events: none;
-      user-select: none;
+      opacity: var(--bg-opacity, 0);
+      filter: saturate(0.9) contrast(1.08);
     }
 
-    .bg-fallback {
+    .poster-bg-shade {
       position: absolute;
       inset: 0;
-      z-index: -40;
-      background:
-        radial-gradient(circle at 18% 14%, rgba(255,255,255,0.10), transparent 18%),
-        radial-gradient(circle at 82% 10%, rgba(160,250,255,0.08), transparent 18%),
-        linear-gradient(180deg, rgba(255,255,255,0.04), transparent 24%),
-        radial-gradient(circle at 50% 100%, rgba(255,255,180,0.08), transparent 26%),
-        linear-gradient(135deg, #10245d 0%, #24107e 55%, #0d4e8d 100%);
+      z-index: -3;
+      pointer-events: none;
+      background: linear-gradient(160deg, rgba(4, 7, 20, 0.68), rgba(7, 8, 24, 0.88));
     }
 
-    .poster::before {
-      content: "";
+    .poster-noise {
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 25%, transparent 75%, rgba(255,255,255,0.03) 100%);
-      pointer-events: none;
       z-index: -1;
-    }
-
-    .overlay-back,
-    .overlay-front {
-      position: absolute;
-      inset: 0;
-      pointer-events: auto;
-    }
-
-    .overlay-back { z-index: 4; }
-    .content-layer { position: relative; z-index: 5; pointer-events: none; }
-    .overlay-front { z-index: 20; }
-
-    body.back-edit-mode .content-layer {
       pointer-events: none;
+      opacity: 0.32;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.07'/%3E%3C/svg%3E");
     }
 
-    body.back-edit-mode .main-card,
-    body.back-edit-mode .main-card * {
-      pointer-events: none !important;
+    .poster.theme-electric {
+      --poster-bg: #090a1f;
+      --poster-accent: #5ce9ff;
+      --poster-accent-2: #8c6fff;
+      --poster-card: rgba(15, 20, 49, 0.84);
+      --poster-card-strong: rgba(20, 27, 66, 0.92);
+      --poster-line: rgba(137, 213, 255, 0.2);
+      --poster-accent-soft: rgba(92, 233, 255, 0.1);
+      --poster-accent-border: rgba(92, 233, 255, 0.35);
+      --poster-accent-shadow: rgba(92, 233, 255, 0.42);
+      --poster-accent-2-soft: rgba(140, 111, 255, 0.1);
+      --glow-1: rgba(55, 225, 255, 0.26);
+      --glow-2: rgba(129, 84, 255, 0.3);
     }
 
-    .top {
-      pointer-events: none;
-      text-align: center;
-      padding: 0 18px 12px;
+    .poster.theme-ember {
+      --poster-bg: #160b13;
+      --poster-accent: #ffd158;
+      --poster-accent-2: #ff5578;
+      --poster-card: rgba(45, 19, 31, 0.84);
+      --poster-card-strong: rgba(61, 24, 36, 0.92);
+      --poster-line: rgba(255, 193, 111, 0.2);
+      --poster-accent-soft: rgba(255, 209, 88, 0.1);
+      --poster-accent-border: rgba(255, 209, 88, 0.35);
+      --poster-accent-shadow: rgba(255, 209, 88, 0.42);
+      --poster-accent-2-soft: rgba(255, 85, 120, 0.1);
+      --glow-1: rgba(255, 191, 71, 0.24);
+      --glow-2: rgba(255, 70, 119, 0.28);
     }
 
-    .main-card {
-      pointer-events: auto;
-      max-width: 1160px;
-      margin: 4px auto 0;
-      border-radius: 36px;
-      padding: 18px;
-      background: linear-gradient(180deg, var(--main-top), var(--main-bottom));
-      border: 1px solid rgba(255,255,255,0.16);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-      overflow: hidden;
-      position: relative;
+    .poster.theme-ice {
+      --poster-bg: #061221;
+      --poster-accent: #a7efff;
+      --poster-accent-2: #3a92ff;
+      --poster-card: rgba(7, 32, 57, 0.86);
+      --poster-card-strong: rgba(9, 43, 76, 0.92);
+      --poster-line: rgba(150, 225, 255, 0.2);
+      --poster-accent-soft: rgba(167, 239, 255, 0.1);
+      --poster-accent-border: rgba(167, 239, 255, 0.35);
+      --poster-accent-shadow: rgba(167, 239, 255, 0.42);
+      --poster-accent-2-soft: rgba(58, 146, 255, 0.1);
+      --glow-1: rgba(96, 220, 255, 0.25);
+      --glow-2: rgba(38, 124, 255, 0.28);
     }
 
-    .main-card * {
-      pointer-events: auto;
-    }
-
-    .main-card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.07), transparent 20%),
-        radial-gradient(circle at 50% 12%, rgba(255,255,255,0.05), transparent 22%);
-      pointer-events: none;
-    }
-
-    .title {
-      margin: 0;
-      font-size: 70px;
-      line-height: .95;
-      font-weight: 1000;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--white);
-      text-shadow: 0 5px 22px rgba(0,0,0,.28);
-    }
-
-    .subtitle {
-      margin: 8px 0 0;
-      font-size: 22px;
-      font-weight: 800;
-      color: var(--muted);
-      text-shadow: var(--text-shadow);
-    }
-
-    .rules-grid {
-      position: relative;
-      z-index: 2;
+    .poster-inner {
+      height: 100%;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      align-items: start;
+      grid-template-rows: auto 1fr auto;
+      padding: 62px 68px 48px;
     }
 
-    .rule-window {
-      cursor: pointer;
-      position: relative;
-      border-radius: 28px;
-      padding: 13px;
-      background: linear-gradient(180deg, var(--panel-top), var(--panel-bottom));
-      border: 1px solid var(--line);
-      box-shadow: var(--soft-shadow);
-      overflow: hidden;
-      min-height: 100px;
-    }
-
-    .rule-window::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.06), transparent 24%),
-        radial-gradient(circle at 14% 0%, rgba(170,240,255,0.12), transparent 28%);
-      pointer-events: none;
-    }
-
-    .rule-window.selected-window {
-      outline: 3px solid rgba(255,255,255,.65);
-      outline-offset: 4px;
-    }
-
-    .rule-window.important {
-      grid-column: 1 / -1;
-      background: linear-gradient(180deg, rgba(110,225,255,.34), rgba(45,85,210,.44));
-    }
-
-    .window-head {
-      position: relative;
-      z-index: 1;
-      border-radius: 20px;
-      padding: 12px 16px;
-      min-height: 58px;
+    .poster-header,
+    .poster-footer {
       display: flex;
       align-items: center;
-      justify-content: center;
-      text-align: center;
-      font-size: 28px;
-      line-height: .95;
-      font-weight: 1000;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .poster-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 0.15em;
+    }
+
+    .poster-brand-ring {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border: 7px solid var(--poster-accent);
+      border-right-color: var(--poster-accent-2);
+      border-radius: 50%;
+      box-shadow: 0 0 26px var(--poster-accent-shadow);
+    }
+
+    .poster-brand-ring::after {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ffffff;
+    }
+
+    .page-index {
+      padding: 13px 18px;
+      border: 1px solid var(--poster-line);
+      border-radius: 999px;
+      color: rgba(255, 255, 255, 0.72);
+      background: rgba(255, 255, 255, 0.055);
+      font-size: 17px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+    }
+
+    .poster-main {
+      min-height: 0;
+      padding-top: 58px;
+    }
+
+    .poster-kicker {
+      margin: 0 0 13px;
+      color: var(--poster-accent);
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: #fff;
-      text-shadow: var(--text-shadow);
-      border: 1px solid rgba(255,255,255,0.16);
-      backdrop-filter: blur(10px);
-      margin-bottom: 12px;
-      background: linear-gradient(180deg, rgba(80,205,255,.25), rgba(35,75,185,.28));
+    }
+
+    .poster-title {
+      max-width: 900px;
+      margin: 0;
+      font-size: 88px;
+      line-height: 0.94;
+      letter-spacing: -0.065em;
+      font-weight: 950;
+    }
+
+    .poster-subtitle {
+      max-width: 850px;
+      margin: 20px 0 0;
+      color: rgba(241, 245, 255, 0.67);
+      font-size: 25px;
+      line-height: 1.34;
+      font-weight: 650;
+    }
+
+    .poster-footer {
+      padding-top: 28px;
+      border-top: 1px solid var(--poster-line);
+      color: rgba(255, 255, 255, 0.62);
+      font-size: 17px;
+      font-weight: 750;
+    }
+
+    .poster-footer strong {
+      color: #ffffff;
+      font-weight: 850;
+    }
+
+    .penalty-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 38px;
+    }
+
+    .penalty-card {
+      position: relative;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 720px;
+      padding: 26px 24px 22px;
+      overflow: hidden;
+      border: 1px solid var(--poster-line);
+      border-radius: 28px;
+      background: linear-gradient(180deg, var(--poster-card-strong), var(--poster-card));
+    }
+
+    .penalty-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 7px;
+      background: var(--level-color);
+      box-shadow: 0 0 24px var(--level-glow);
+    }
+
+    .level-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .level-number {
+      color: var(--level-color);
+      font-size: 16px;
+      font-weight: 950;
+      letter-spacing: 0.13em;
+    }
+
+    .level-tag {
+      padding: 7px 10px;
+      border: 1px solid var(--level-border);
+      border-radius: 999px;
+      color: var(--level-color);
+      background: var(--level-soft);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .penalty-name {
+      margin: 0;
+      font-size: 42px;
+      line-height: 0.98;
+      letter-spacing: -0.04em;
+      font-weight: 950;
+    }
+
+    .penalty-duration {
+      margin: 9px 0 24px;
+      color: var(--level-color);
+      font-size: 22px;
+      font-weight: 850;
     }
 
     .rule-list {
-      position: relative;
-      z-index: 1;
-      list-style: none;
+      display: grid;
+      gap: 14px;
       margin: 0;
       padding: 0;
-      display: grid;
-      gap: 7px;
+      list-style: none;
     }
 
-    .rule-list li {
+    .rule-item {
+      position: relative;
       display: grid;
-      grid-template-columns: 26px 1fr;
-      gap: 8px;
+      grid-template-columns: 12px 1fr;
+      gap: 11px;
       align-items: start;
-      padding: 4px 0 6px;
-      border-bottom: 1px solid rgba(255,255,255,.10);
+      color: rgba(248, 250, 255, 0.91);
+      font-size: 21px;
+      line-height: 1.24;
+      font-weight: 690;
     }
 
-    .rule-list li:last-child { border-bottom: none; }
-
-    .arrow {
-      font-size: 22px;
-      line-height: 1;
-      font-weight: 1000;
-      color: #fff;
-      text-shadow: var(--text-shadow);
-      transform: translateY(2px);
-    }
-
-    .rule-text {
-      font-size: 24px;
-      line-height: 1.05;
-      font-weight: 900;
-      color: #fff;
-      text-shadow: var(--text-shadow);
-      white-space: pre-wrap;
-    }
-
-    .vibe {
-      position: relative;
-      z-index: 2;
-      margin-top: 14px;
-      border-radius: 26px;
-      padding: 15px 18px;
-      text-align: center;
-      font-size: 30px;
-      line-height: 1.05;
-      font-weight: 1000;
-      background: linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.08));
-      border: 1px solid rgba(255,255,255,.16);
-      box-shadow: var(--soft-shadow);
-      text-shadow: var(--text-shadow);
-    }
-
-    .small-link {
-      position: relative;
-      z-index: 2;
-      margin-top: 10px;
-      text-align: center;
-      font-size: 18px;
-      font-weight: 800;
-      color: rgba(255,255,255,.80);
-      text-shadow: var(--text-shadow);
-    }
-
-    .overlay-item {
-      position: absolute;
-      left: 50px;
-      top: 50px;
-      width: 140px;
-      transform-origin: center center;
-      cursor: grab;
-      pointer-events: auto;
-      user-select: none;
-      filter: drop-shadow(0 8px 18px rgba(0,0,0,.30));
-      z-index: 1;
-      touch-action: none;
-    }
-
-    .overlay-item.dragging {
-      cursor: grabbing;
-      filter: drop-shadow(0 12px 24px rgba(0,0,0,.36));
-    }
-
-    .overlay-item.selected {
-      outline: 2px dashed rgba(255,255,255,.70);
-      outline-offset: 4px;
-    }
-
-    .overlay-item img {
-      display: block;
-      width: 100%;
-      height: auto;
-      pointer-events: none;
-      user-select: none;
-      -webkit-user-drag: none;
-    }
-
-    .item-menu {
-      position: absolute;
-      right: -10px;
-      top: -10px;
-      z-index: 30;
-    }
-
-    .item-menu-btn {
-      width: 34px;
-      height: 34px;
+    .rule-dot {
+      width: 8px;
+      height: 8px;
+      margin-top: 9px;
       border-radius: 50%;
-      border: 1px solid rgba(255,255,255,.18);
-      background: rgba(7,17,46,.86);
-      color: #fff;
-      font-size: 18px;
-      font-weight: 900;
-      cursor: pointer;
-      display: none;
+      background: var(--level-color);
+      box-shadow: 0 0 12px var(--level-glow);
+    }
+
+    .card-note {
+      margin-top: auto;
+      padding: 16px;
+      border: 1px solid var(--level-note-border);
+      border-radius: 17px;
+      color: rgba(255, 255, 255, 0.8);
+      background: var(--level-note-soft);
+      font-size: 17px;
+      line-height: 1.3;
+      font-weight: 720;
+    }
+
+    .filters-intro {
+      max-width: 920px;
+      margin: 34px 0 24px;
+      padding: 28px 30px;
+      border: 1px solid var(--poster-line);
+      border-radius: 25px;
+      color: rgba(255, 255, 255, 0.9);
+      background: var(--poster-card);
+      font-size: 27px;
+      line-height: 1.32;
+      font-weight: 740;
+    }
+
+    .filter-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .filter-chip {
+      padding: 11px 16px;
+      border: 1px solid var(--poster-line);
+      border-radius: 999px;
+      color: rgba(255, 255, 255, 0.78);
+      background: rgba(255, 255, 255, 0.055);
+      font-size: 17px;
+      font-weight: 780;
+    }
+
+    .bot-callout {
+      display: grid;
+      grid-template-columns: 68px 1fr auto;
       align-items: center;
-      justify-content: center;
-      line-height: 1;
+      gap: 20px;
+      padding: 22px 24px;
+      border: 1px solid var(--poster-accent-border);
+      border-radius: 25px;
+      background: linear-gradient(135deg, var(--poster-accent-soft), var(--poster-accent-2-soft));
     }
 
-    .overlay-item.selected .item-menu-btn { display: flex; }
-
-    .item-menu-panel {
-      position: absolute;
-      top: 40px;
-      right: 0;
-      min-width: 132px;
-      border-radius: 14px;
-      background: rgba(9,20,56,.96);
-      border: 1px solid rgba(255,255,255,.12);
-      box-shadow: 0 12px 28px rgba(0,0,0,.22);
-      padding: 6px;
-      display: none;
-      gap: 4px;
+    .bot-icon {
+      width: 68px;
+      height: 68px;
+      display: grid;
+      place-items: center;
+      border-radius: 21px;
+      color: #07101c;
+      background: var(--poster-accent);
     }
 
-    .item-menu.open .item-menu-panel { display: grid; }
+    .bot-icon svg {
+      width: 36px;
+      height: 36px;
+    }
 
-    .item-action {
-      border: none;
-      background: rgba(255,255,255,.06);
-      color: #fff;
+    .bot-copy small,
+    .bot-copy strong {
+      display: block;
+    }
+
+    .bot-copy small {
+      margin-bottom: 5px;
+      color: rgba(255, 255, 255, 0.58);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .bot-copy strong {
+      font-size: 25px;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+
+    .bot-path {
+      max-width: 225px;
+      color: var(--poster-accent);
+      font-size: 17px;
+      line-height: 1.25;
+      font-weight: 850;
+      text-align: right;
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-top: 27px;
+    }
+
+    .step-card {
+      min-height: 205px;
+      padding: 23px 22px;
+      border: 1px solid var(--poster-line);
+      border-radius: 24px;
+      background: var(--poster-card);
+    }
+
+    .step-number {
+      display: block;
+      margin-bottom: 23px;
+      color: var(--poster-accent);
+      font-size: 15px;
+      font-weight: 950;
+      letter-spacing: 0.14em;
+    }
+
+    .step-card h3 {
+      margin: 0 0 10px;
+      font-size: 23px;
+      line-height: 1.1;
+      font-weight: 900;
+    }
+
+    .step-card p {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.69);
+      font-size: 19px;
+      line-height: 1.3;
+      font-weight: 680;
+    }
+
+    .scope-banner {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 34px 0 20px;
+      padding: 19px 22px;
+      border: 1px solid var(--poster-accent-border);
+      border-radius: 22px;
+      color: #ffffff;
+      background: var(--poster-accent-soft);
+      font-size: 21px;
+      line-height: 1.25;
+      font-weight: 820;
+    }
+
+    .scope-badge {
+      flex: 0 0 auto;
+      padding: 8px 11px;
       border-radius: 10px;
-      padding: 10px 12px;
-      text-align: left;
+      color: #06101a;
+      background: var(--poster-accent);
       font-size: 13px;
-      font-weight: 800;
-      cursor: pointer;
+      font-weight: 950;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
-    .item-action:hover { background: rgba(255,255,255,.12); }
-
-    .window-editor {
-      display: grid;
-      gap: 8px;
-      max-height: 280px;
-      overflow: auto;
-      padding-right: 2px;
+    .outside-card {
+      padding: 25px 27px;
+      border: 1px solid var(--poster-line);
+      border-radius: 26px;
+      background: var(--poster-card-strong);
     }
 
-    .window-editor-item {
-      display: grid;
-      grid-template-columns: 1fr 34px;
-      gap: 6px;
-      align-items: center;
-    }
-
-    .window-editor-item button {
-      width: 34px;
-      height: 34px;
-      border-radius: 10px;
-      border: none;
-      background: rgba(255,255,255,.10);
-      color: #fff;
-      cursor: pointer;
+    .outside-card small {
+      display: block;
+      margin-bottom: 12px;
+      color: var(--poster-accent);
+      font-size: 15px;
       font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
     }
 
-    @media (max-width: 900px) {
-      body {
-        display: grid;
-        grid-template-columns: 1fr;
-        padding: 10px;
-        gap: 10px;
-        overflow-x: hidden;
+    .outside-card p {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.91);
+      font-size: 24px;
+      line-height: 1.34;
+      font-weight: 720;
+    }
+
+    .important-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 18px 0;
+    }
+
+    .important-item {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      align-items: center;
+      gap: 14px;
+      min-height: 100px;
+      padding: 18px;
+      border: 1px solid var(--poster-line);
+      border-radius: 22px;
+      background: var(--poster-card);
+    }
+
+    .important-icon {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      color: #06101a;
+      background: var(--poster-accent);
+      font-size: 21px;
+      font-weight: 950;
+    }
+
+    .important-item p {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.28;
+      font-weight: 760;
+    }
+
+    .appeal-card {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 24px;
+      padding: 24px 27px;
+      border-radius: 25px;
+      color: #07101c;
+      background: linear-gradient(135deg, var(--poster-accent), #ffffff 115%);
+    }
+
+    .appeal-card small,
+    .appeal-card strong {
+      display: block;
+    }
+
+    .appeal-card small {
+      margin-bottom: 5px;
+      color: rgba(6, 16, 26, 0.64);
+      font-size: 15px;
+      font-weight: 820;
+    }
+
+    .appeal-card strong {
+      font-size: 25px;
+      line-height: 1.18;
+      font-weight: 950;
+    }
+
+    .appeal-link {
+      padding: 13px 16px;
+      border: 2px solid rgba(6, 16, 26, 0.16);
+      border-radius: 14px;
+      font-size: 17px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    [contenteditable="true"] {
+      cursor: text;
+      border-radius: 5px;
+      transition: background 140ms ease, box-shadow 140ms ease;
+    }
+
+    [contenteditable="true"]:hover {
+      background: rgba(255, 255, 255, 0.055);
+      box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.055);
+    }
+
+    [contenteditable="true"]:focus {
+      background: rgba(255, 255, 255, 0.075);
+      box-shadow: 0 0 0 6px rgba(89, 232, 255, 0.1);
+    }
+
+    .editable-wrap {
+      position: relative;
+      min-width: 0;
+    }
+
+    .remove-rule {
+      position: absolute;
+      top: -9px;
+      right: -9px;
+      z-index: 4;
+      width: 27px;
+      height: 27px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 50%;
+      color: #ffffff;
+      background: #d82f5f;
+      font-size: 18px;
+      line-height: 1;
+      opacity: 0;
+      transform: scale(0.8);
+    }
+
+    .editable-wrap:hover .remove-rule,
+    .remove-rule:focus-visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .add-rule {
+      width: 100%;
+      min-height: 38px;
+      margin-top: 15px;
+      border: 1px dashed var(--level-border);
+      border-radius: 13px;
+      color: var(--level-color);
+      background: transparent;
+      font-size: 14px;
+      font-weight: 850;
+      opacity: 0.38;
+    }
+
+    .penalty-card:hover .add-rule,
+    .add-rule:focus-visible {
+      opacity: 1;
+    }
+
+    .export-clean .add-rule,
+    .export-clean .remove-rule {
+      display: none !important;
+    }
+
+    .export-clean [contenteditable="true"] {
+      background: transparent !important;
+      box-shadow: none !important;
+      outline: none !important;
+    }
+
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 100;
+      max-width: min(380px, calc(100vw - 40px));
+      padding: 13px 16px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      color: #ffffff;
+      background: rgba(20, 24, 43, 0.96);
+      box-shadow: var(--shadow);
+      font-size: 14px;
+      font-weight: 700;
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .hidden-input {
+      position: fixed;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @media (max-width: 980px) {
+      .main-layout {
+        grid-template-columns: 270px minmax(0, 1fr);
       }
 
-      .sidebar {
+      .control-panel,
+      .workspace {
+        padding: 14px;
+      }
+
+      .brand-copy span,
+      .header-export-text {
+        display: none;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .app {
+        grid-template-rows: 64px auto;
+      }
+
+      .app-header {
+        min-height: 64px;
+        padding: 10px 12px;
+      }
+
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+      }
+
+      .brand-copy strong {
+        font-size: 14px;
+      }
+
+      .main-layout {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .control-panel {
         position: relative;
         top: 0;
-        min-width: 0;
+        order: 2;
         width: 100%;
-        max-height: none;
+        height: auto;
+        border-top: 1px solid var(--line);
+        border-right: 0;
       }
 
       .workspace {
-        width: 100%;
+        order: 1;
+        padding: 12px 8px 18px;
       }
 
-      .canvas-wrap {
-        width: 100%;
-        max-width: 100%;
-        overflow: auto;
+      .workspace-toolbar {
+        padding: 0 4px;
       }
 
-      .poster {
-        width: 1280px;
-        min-height: 720px;
+      .toolbar-title span,
+      .scale-pill {
+        display: none;
+      }
+
+      .page-list {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .page-button {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        min-height: 78px;
+        padding: 8px 5px;
+        text-align: center;
+      }
+
+      .page-button-copy small,
+      .page-chevron {
+        display: none;
+      }
+
+      .page-button-copy strong {
+        font-size: 12px;
+      }
+
+      .header-actions {
+        gap: 5px;
+      }
+
+      .icon-btn {
+        width: 38px;
+        height: 38px;
+      }
+
+      .header-actions .action-btn {
+        width: 40px;
+        min-height: 38px;
+        padding: 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
       }
     }
   </style>
 </head>
-
 <body>
-  <aside class="sidebar">
-    <h1>Конструктор правил</h1>
-    <p>На ПК кликай по окну на картинке. На телефоне можно выбрать окно через список ниже.</p>
-
-    <div class="group">
-      <div class="group-title">База</div>
-      <input id="titleInput" type="text" value="Правила PK XD Portal" />
-      <input id="subtitleInput" type="text" value="Чат должен оставаться безопасным, понятным и приятным для всех участников" />
-      <input id="vibeInput" type="text" value="🤩 Поддерживай вайб — и портал станет домом 🌀" />
-      <div class="row-2">
-        <label class="file-label" for="bgInput">Фон</label>
-        <label class="file-label" for="templateInput">Шаблон</label>
+  <div class="app">
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="8"></circle>
+            <path d="M8.5 12h7M12 8.5v7"></path>
+          </svg>
+        </div>
+        <div class="brand-copy">
+          <strong>Студия правил</strong>
+          <span>PK XD PORTAL</span>
+        </div>
       </div>
-      <input id="bgInput" type="file" accept="image/*" />
-      <input id="templateInput" type="file" accept=".json,application/json" />
-    </div>
 
-    <div class="group">
-      <div class="group-title">Окна</div>
-      <select id="windowSelect"></select>
-      <button id="addWindowBtn" class="btn primary">Добавить окно</button>
-      <button id="deleteWindowBtn" class="btn">Удалить выбранное окно</button>
-      <div class="row-2">
-        <button id="moveWindowUpBtn" class="btn">Окно ↑</button>
-        <button id="moveWindowDownBtn" class="btn">Окно ↓</button>
+      <div class="header-actions">
+        <button class="icon-btn" id="undoBtn" type="button" title="Отменить, Ctrl+Z" aria-label="Отменить">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 14-4-4 4-4"></path><path d="M5 10h8a6 6 0 0 1 6 6v1"></path></svg>
+        </button>
+        <button class="icon-btn" id="redoBtn" type="button" title="Вернуть, Ctrl+Y" aria-label="Вернуть">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 4-4-4-4"></path><path d="M19 10h-8a6 6 0 0 0-6 6v1"></path></svg>
+        </button>
+        <button class="action-btn" id="quickExportBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg>
+          <span class="header-export-text">Скачать карточку</span>
+        </button>
       </div>
-      <input id="windowTitleInput" type="text" placeholder="Заголовок окна" />
-      <input id="windowColorInput" type="color" value="#ff3b30" />
-      <button id="applyWindowBtn" class="btn">Применить к окну</button>
-      <button id="addPointBtn" class="btn">Добавить пункт</button>
-      <div id="windowEditor" class="window-editor"></div>
-    </div>
+    </header>
 
-    <div class="group">
-      <div class="group-title">Объекты</div>
-      <label class="file-label" for="objInput">Добавить объект</label>
-      <input id="objInput" type="file" accept="image/*" multiple />
-      <div class="row-2">
-        <button id="toBackBtn" class="btn">За блоки</button>
-        <button id="toFrontBtn" class="btn">Поверх</button>
-      </div>
-      <button id="deleteObjBtn" class="btn">Удалить объект</button>
-      <button id="backEditBtn" class="btn">Режим задних объектов</button>
-      <div class="hint">Колесо — масштаб. Shift + колесо — поворот. Если объект за блоками не берётся — включи режим задних объектов.</div>
-    </div>
+    <div class="main-layout">
+      <aside class="control-panel" aria-label="Панель настройки">
+        <section class="panel-section">
+          <div class="section-head">
+            <h2>Карточки</h2>
+            <span>3 страницы</span>
+          </div>
+          <nav class="page-list" id="pageList" aria-label="Страницы правил"></nav>
+          <p class="helper">Нажми на любой текст в макете, чтобы изменить его.</p>
+        </section>
 
-    <div class="group">
-      <div class="group-title">Сохранение</div>
-      <div class="row-2">
-        <button id="undoBtn" class="btn">Назад</button>
-        <button id="saveTemplateBtn" class="btn">Сохранить шаблон</button>
-      </div>
-      <button id="savePngBtn" class="btn primary">Сохранить PNG</button>
-    </div>
+        <section class="panel-section">
+          <div class="section-head">
+            <h2>Оформление</h2>
+          </div>
+          <div class="theme-grid" id="themeGrid">
+            <button class="theme-button" type="button" data-theme="electric">
+              <span class="theme-dot electric"></span>
+              Неон
+            </button>
+            <button class="theme-button" type="button" data-theme="ember">
+              <span class="theme-dot ember"></span>
+              Огонь
+            </button>
+            <button class="theme-button" type="button" data-theme="ice">
+              <span class="theme-dot ice"></span>
+              Лёд
+            </button>
+          </div>
 
-    <div class="group">
-      <div class="group-title">Статус</div>
-      <div id="status" class="status">Готово.</div>
-    </div>
-  </aside>
+          <label class="field-label" for="backgroundInput">Свой фон</label>
+          <div class="button-row">
+            <button class="ghost-btn" id="chooseBackgroundBtn" type="button">Выбрать</button>
+            <button class="ghost-btn" id="removeBackgroundBtn" type="button">Убрать</button>
+          </div>
+          <label class="field-label" for="backgroundOpacity">Яркость фона</label>
+          <div class="range-row">
+            <input id="backgroundOpacity" type="range" min="0" max="70" step="1" value="28">
+            <span class="range-value" id="opacityValue">28%</span>
+          </div>
+        </section>
 
-  <section class="workspace">
-    <div class="canvas-wrap">
-      <main id="poster" class="poster">
-        <img id="bgImage" class="bg-image" alt="" />
-        <div class="bg-fallback"></div>
+        <section class="panel-section">
+          <div class="section-head">
+            <h2>Экспорт</h2>
+            <span>1080 × 1350</span>
+          </div>
+          <button class="action-btn" id="exportCurrentBtn" type="button" style="width:100%">Скачать эту карточку</button>
+          <div class="button-row" style="margin-top:8px">
+            <button class="ghost-btn" id="exportAllBtn" type="button">Скачать все 3</button>
+            <button class="ghost-btn" id="copyTextBtn" type="button">Копировать текст</button>
+          </div>
+        </section>
 
-        <div id="overlayBack" class="overlay-back"></div>
+        <section class="panel-section">
+          <div class="section-head">
+            <h2>Проект</h2>
+          </div>
+          <div class="button-row">
+            <button class="ghost-btn" id="saveProjectBtn" type="button">Сохранить</button>
+            <button class="ghost-btn" id="openProjectBtn" type="button">Открыть</button>
+          </div>
+          <button class="ghost-btn" id="resetBtn" type="button" style="width:100%;margin-top:8px">Вернуть новые правила</button>
+          <p class="helper">Изменения сохраняются автоматически в этом браузере.</p>
+        </section>
+      </aside>
 
-        <div class="content-layer">
-          <header class="top">
-            <h1 id="posterTitle" class="title">Правила PK XD Portal</h1>
-            <p id="posterSubtitle" class="subtitle">Чат должен оставаться безопасным, понятным и приятным для всех участников</p>
-          </header>
-
-          <section class="main-card">
-            <div id="rulesGrid" class="rules-grid"></div>
-            <div id="posterVibe" class="vibe">🤩 Поддерживай вайб — и портал станет домом 🌀</div>
-            <div class="small-link">t.me/pkxdportal</div>
-          </section>
+      <main class="workspace">
+        <div class="workspace-toolbar">
+          <div class="toolbar-title">
+            <strong id="currentPageTitle">Наказания</strong>
+            <span>Редактирование прямо на карточке</span>
+          </div>
+          <div class="toolbar-group">
+            <button class="icon-btn" id="previousPageBtn" type="button" title="Предыдущая карточка" aria-label="Предыдущая карточка">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
+            </button>
+            <span class="scale-pill" id="scaleValue">100%</span>
+            <button class="icon-btn" id="nextPageBtn" type="button" title="Следующая карточка" aria-label="Следующая карточка">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
+            </button>
+          </div>
         </div>
 
-        <div id="overlayFront" class="overlay-front"></div>
+        <div class="poster-viewport" id="posterViewport">
+          <div class="poster-stage" id="posterStage">
+            <article class="poster theme-electric" id="poster" aria-label="Предпросмотр карточки правил"></article>
+          </div>
+        </div>
       </main>
     </div>
-  </section>
+  </div>
 
-<script>
-const DEFAULT_STATE = {
-  version: 11,
-  title: "Правила PK XD Portal",
-  subtitle: "Чат должен оставаться безопасным, понятным и приятным для всех участников",
-  vibe: "🤩 Поддерживай вайб — и портал станет домом 🌀",
-  bgImage: null,
-  windows: [
-    {
-      title: "🔴 Мут 1 час",
-      color: "#ffeb3b",
-      important: false,
-      items: [
-        "Мат (под спойлером — можно)",
-        "Спам (3+ одинаковых сообщений подряд или 20+ эмодзи)",
-        "Оффтоп (сообщения не по теме чата)",
-        "Флуд GIF / стикерами / голосовыми"
+  <input class="hidden-input" id="backgroundInput" type="file" accept="image/*">
+  <input class="hidden-input" id="projectInput" type="file" accept="application/json,.json">
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const STORAGE_KEY = "pkxd-portal-rules-studio-v2";
+
+    const DEFAULT_STATE = {
+      version: 2,
+      activePage: 0,
+      theme: "electric",
+      backgroundImage: "",
+      backgroundOpacity: 28,
+      pages: [
+        {
+          id: "penalties",
+          navTitle: "Наказания",
+          navMeta: "мут, варн, бан",
+          kicker: "Правила чатов",
+          title: "Наказания",
+          subtitle: "Три уровня. Решение зависит от нарушения и контекста.",
+          footer: "Правила действуют только в наших чатах",
+          sections: [
+            {
+              number: "01",
+              tag: "Нарушение",
+              name: "Мут",
+              duration: "1 час",
+              color: "#56dcff",
+              items: [
+                "Спам: 3 одинаковых сообщения или 20+ эмодзи",
+                "Флуд стикерами, GIF, голосовыми, кружками или аудио"
+              ],
+              note: "Сообщения удаляются, участник временно не может писать."
+            },
+            {
+              number: "02",
+              tag: "Предупреждение",
+              name: "Варн",
+              duration: "3 варна = бан",
+              color: "#ffbf55",
+              items: [
+                "Провокации и конфликты",
+                "Пиар / реклама",
+                "Запрещённые ссылки",
+                "Политика, религиозные споры, расизм"
+              ],
+              note: "Третий активный варн приводит к бану."
+            },
+            {
+              number: "03",
+              tag: "Навсегда",
+              name: "Бан",
+              duration: "Без срока",
+              color: "#ff557d",
+              items: [
+                "Слив личных данных",
+                "Скам / обман",
+                "Серьёзные угрозы / пожелания смерти",
+                "18+ медиа и ссылки",
+                "Вредоносные ссылки / рейды",
+                "Обход наказания"
+              ],
+              note: "Если забаненный участник вернётся с твинка или другого аккаунта, новый аккаунт тоже получит бан."
+            }
+          ]
+        },
+        {
+          id: "filters",
+          navTitle: "Личные фильтры",
+          navMeta: "твои границы",
+          kicker: "Настрой чат под себя",
+          title: "Личные фильтры",
+          subtitle: "Ты сам выбираешь, что не хочешь получать в свой адрес.",
+          intro: "Мат, обычные оскорбления, шипперство и ЛГБТ-темы не запрещены для всего чата.",
+          chips: ["Мат", "Оскорбления", "Шипперство", "ЛГБТ-темы"],
+          botLabel: "Открой бота",
+          bot: "@pkxdportal_zornik_bot",
+          botPath: "Личные фильтры → включи нужные",
+          steps: [
+            { number: "01", title: "Выбери фильтры", text: "Включи только те темы, которые не хочешь получать лично." },
+            { number: "02", title: "Первое нарушение", text: "Сообщение удаляется." },
+            { number: "03", title: "Повтор за 24 часа", text: "Нарушитель получает мут или варн." }
+          ],
+          footer: "Фильтры защищают тебя, но не запрещают тему всему чату"
+        },
+        {
+          id: "important",
+          navTitle: "Важно",
+          navMeta: "контекст и обжалование",
+          kicker: "Перед отправкой сообщения",
+          title: "Что важно знать",
+          subtitle: "Короткие условия, которые дополняют основные наказания.",
+          scope: "Правила действуют только в чатах PK XD PORTAL.",
+          outsideLabel: "Действия вне Портала",
+          outside: "Обычно за действия вне Портала мы не наказываем. Но за серьёзные нарушения из категории «Бан навсегда» против владельца Портала, при наличии доказательств, человек тоже может получить бан.",
+          important: [
+            "Незнание правил не освобождает от ответственности",
+            "Администрация учитывает контекст"
+          ],
+          appealLabel: "Нужно снять наказание?",
+          appealText: "Некоторые наказания можно снять по ссылке",
+          appealLink: "t.me/pkxdportal/57",
+          footer: "Сохрани карточки, чтобы правила всегда были под рукой"
+        }
       ]
-    },
-    {
-      title: "🔴 Варн ➤ Бан",
-      color: "#ff3b30",
-      important: false,
-      items: [
-        "Оскорбления / токсичность",
-        "Провокации и конфликты",
-        "Пиар / реклама / ссылки",
-        "Шипперство",
-        "Политика / религия / расизм",
-        "Неприятный или провокационный контент",
-        "Обход наказания или повторные нарушения"
-      ]
-    },
-    {
-      title: "🔴 Бан навсегда",
-      color: "#ff0000",
-      important: false,
-      items: [
-        "Слив личных данных",
-        "18+ контент (любой формат: текст, фото, ник, аватар)",
-        "Скам / обман",
-        "Пожелания смерти / серьёзные угрозы",
-        "Вредоносные ссылки или рейд"
-      ]
-    },
-    {
-      title: "❤️ Важно",
-      color: "#ffffff",
-      important: true,
-      items: [
-        "3 варна = бан",
-        "Думай перед отправкой сообщения",
-        "Незнание правил не освобождает от ответственности.",
-        "Снять варн / бан можно в магазине портала: https://t.me/pkxdportal/"
-      ]
-    }
-  ],
-  overlayItems: []
-};
-
-let state = structuredClone(DEFAULT_STATE);
-let selectedWindow = 0;
-let selectedItem = null;
-const historyStack = [];
-
-const poster = document.getElementById("poster");
-const rulesGrid = document.getElementById("rulesGrid");
-const posterTitle = document.getElementById("posterTitle");
-const posterSubtitle = document.getElementById("posterSubtitle");
-const posterVibe = document.getElementById("posterVibe");
-const bgImage = document.getElementById("bgImage");
-const overlayBack = document.getElementById("overlayBack");
-const overlayFront = document.getElementById("overlayFront");
-const statusBox = document.getElementById("status");
-
-const titleInput = document.getElementById("titleInput");
-const subtitleInput = document.getElementById("subtitleInput");
-const vibeInput = document.getElementById("vibeInput");
-const bgInput = document.getElementById("bgInput");
-const templateInput = document.getElementById("templateInput");
-const objInput = document.getElementById("objInput");
-const windowTitleInput = document.getElementById("windowTitleInput");
-const windowColorInput = document.getElementById("windowColorInput");
-const windowEditor = document.getElementById("windowEditor");
-const windowSelect = document.getElementById("windowSelect");
-const backEditBtn = document.getElementById("backEditBtn");
-
-function setStatus(text) {
-  statusBox.textContent = text;
-}
-
-function saveHistory() {
-  historyStack.push(JSON.stringify(getCurrentTemplate()));
-  if (historyStack.length > 80) historyStack.shift();
-}
-
-function hexToRgba(hex, alpha) {
-  const clean = hex.replace("#", "");
-  const bigint = parseInt(clean, 16);
-  const r = (bigint >> 16) & 255;
-  const g = (bigint >> 8) & 255;
-  const b = bigint & 255;
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-}
-
-function readFileAsDataURL(file) {
-  return new Promise((resolve, reject) => {
-    const r = new FileReader();
-    r.onload = () => resolve(r.result);
-    r.onerror = reject;
-    r.readAsDataURL(file);
-  });
-}
-
-function render() {
-  posterTitle.textContent = state.title;
-  posterSubtitle.textContent = state.subtitle;
-  posterVibe.textContent = state.vibe;
-
-  titleInput.value = state.title;
-  subtitleInput.value = state.subtitle;
-  vibeInput.value = state.vibe;
-
-  if (state.bgImage) {
-    bgImage.src = state.bgImage;
-    bgImage.style.display = "block";
-  } else {
-    bgImage.src = "";
-    bgImage.style.display = "none";
-  }
-
-  rulesGrid.innerHTML = "";
-
-  state.windows.forEach((win, index) => {
-    const card = document.createElement("section");
-    card.className = "rule-window" + (win.important ? " important" : "") + (index === selectedWindow ? " selected-window" : "");
-    card.dataset.index = index;
-
-    const head = document.createElement("div");
-    head.className = "window-head";
-    head.textContent = win.title;
-    head.style.background = `linear-gradient(180deg, ${hexToRgba(win.color, 0.62)}, ${hexToRgba(win.color, 0.42)})`;
-
-    const list = document.createElement("ul");
-    list.className = "rule-list";
-
-    win.items.forEach(text => {
-      const li = document.createElement("li");
-      li.innerHTML = `<span class="arrow">➤</span><span class="rule-text"></span>`;
-      li.querySelector(".rule-text").textContent = text;
-      list.appendChild(li);
-    });
-
-    card.appendChild(head);
-    card.appendChild(list);
-
-    card.addEventListener("click", (e) => {
-      e.stopPropagation();
-      selectedWindow = index;
-      render();
-      setStatus("Окно выбрано.");
-    });
-
-    rulesGrid.appendChild(card);
-  });
-
-  renderWindowSelect();
-  renderWindowEditor();
-}
-
-function renderWindowSelect() {
-  windowSelect.innerHTML = "";
-  state.windows.forEach((win, index) => {
-    const option = document.createElement("option");
-    option.value = String(index);
-    option.textContent = `${index + 1}. ${win.title}`;
-    windowSelect.appendChild(option);
-  });
-  windowSelect.value = String(selectedWindow);
-}
-
-function renderWindowEditor() {
-  const win = state.windows[selectedWindow];
-  if (!win) return;
-
-  windowTitleInput.value = win.title;
-  windowColorInput.value = win.color;
-  windowEditor.innerHTML = "";
-
-  win.items.forEach((text, index) => {
-    const row = document.createElement("div");
-    row.className = "window-editor-item";
-
-    const input = document.createElement("textarea");
-    input.rows = 2;
-    input.value = text;
-    input.addEventListener("input", () => {
-      win.items[index] = input.value;
-      render();
-    });
-
-    const del = document.createElement("button");
-    del.textContent = "×";
-    del.addEventListener("click", () => {
-      saveHistory();
-      win.items.splice(index, 1);
-      render();
-    });
-
-    row.appendChild(input);
-    row.appendChild(del);
-    windowEditor.appendChild(row);
-  });
-}
-
-function getCurrentTemplate() {
-  state.overlayItems = Array.from(document.querySelectorAll(".overlay-item")).map(item => {
-    const img = item.querySelector("img");
-    return {
-      src: img?.src || "",
-      left: parseFloat(item.style.left || "0"),
-      top: parseFloat(item.style.top || "0"),
-      width: parseFloat(item.style.width || "140"),
-      scale: parseFloat(item.dataset.scale || "1"),
-      rotate: parseFloat(item.dataset.rotate || "0"),
-      layer: item.dataset.layer || "front"
     };
-  });
-  return structuredClone(state);
-}
 
-function restoreTemplate(data) {
-  state = structuredClone(data);
-  if (!Array.isArray(state.windows)) state.windows = structuredClone(DEFAULT_STATE.windows);
-  if (!Array.isArray(state.overlayItems)) state.overlayItems = [];
+    let state = loadState();
+    let undoStack = [];
+    let redoStack = [];
+    let editSnapshot = null;
+    let opacitySnapshot = null;
+    let toastTimer = null;
+    let persistTimer = null;
+    let exporting = false;
 
-  selectedWindow = Math.min(selectedWindow, state.windows.length - 1);
-  overlayBack.innerHTML = "";
-  overlayFront.innerHTML = "";
-  selectedItem = null;
+    const poster = document.getElementById("poster");
+    const posterStage = document.getElementById("posterStage");
+    const posterViewport = document.getElementById("posterViewport");
+    const pageList = document.getElementById("pageList");
+    const currentPageTitle = document.getElementById("currentPageTitle");
+    const scaleValue = document.getElementById("scaleValue");
+    const toast = document.getElementById("toast");
+    const undoBtn = document.getElementById("undoBtn");
+    const redoBtn = document.getElementById("redoBtn");
+    const backgroundInput = document.getElementById("backgroundInput");
+    const projectInput = document.getElementById("projectInput");
+    const backgroundOpacity = document.getElementById("backgroundOpacity");
+    const opacityValue = document.getElementById("opacityValue");
 
-  render();
+    function clone(value) {
+      return JSON.parse(JSON.stringify(value));
+    }
 
-  state.overlayItems.forEach((obj, i) => createOverlayItem(obj.src, i, obj, false));
-}
+    function hexToRgba(hex, alpha) {
+      const clean = String(hex).replace("#", "");
+      const value = Number.parseInt(clean, 16);
+      const red = (value >> 16) & 255;
+      const green = (value >> 8) & 255;
+      const blue = value & 255;
+      return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+    }
 
-function setSelectedItem(item) {
-  document.querySelectorAll(".overlay-item.selected").forEach(el => el.classList.remove("selected"));
-  document.querySelectorAll(".item-menu").forEach(el => el.classList.remove("open"));
-  selectedItem = item;
-  if (item) item.classList.add("selected");
-}
+    function loadState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (isValidState(saved)) return saved;
+      } catch (error) {
+        console.info("Автосохранение не найдено", error);
+      }
+      return clone(DEFAULT_STATE);
+    }
 
-function applyTransform(item) {
-  item.style.transform = `scale(${item.dataset.scale || 1}) rotate(${item.dataset.rotate || 0}deg)`;
-}
+    function isValidState(value) {
+      return Boolean(
+        value &&
+        value.version === 2 &&
+        Array.isArray(value.pages) &&
+        value.pages.length === 3 &&
+        value.pages[0]?.id === "penalties" &&
+        value.pages[1]?.id === "filters" &&
+        value.pages[2]?.id === "important"
+      );
+    }
 
-function getPosterRelativePoint(clientX, clientY) {
-  const rect = poster.getBoundingClientRect();
-  const scaleX = poster.offsetWidth / rect.width;
-  const scaleY = poster.offsetHeight / rect.height;
-  return {
-    x: (clientX - rect.left) * scaleX,
-    y: (clientY - rect.top) * scaleY
-  };
-}
+    function persist(immediate = false) {
+      const save = () => {
+        persistTimer = null;
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (error) {
+          showToast("Не удалось сохранить автоматически. Скачай проект вручную.");
+        }
+      };
+      clearTimeout(persistTimer);
+      if (immediate) save();
+      else persistTimer = setTimeout(save, 160);
+    }
 
-function createMenu(item) {
-  const menu = document.createElement("div");
-  menu.className = "item-menu";
+    function setByPath(target, path, value) {
+      const keys = path.split(".");
+      const last = keys.pop();
+      const parent = keys.reduce((current, key) => current[key], target);
+      parent[last] = value;
+    }
 
-  const btn = document.createElement("button");
-  btn.className = "item-menu-btn";
-  btn.type = "button";
-  btn.textContent = "⋯";
+    function beginTextEdit() {
+      if (!editSnapshot) editSnapshot = JSON.stringify(state);
+    }
 
-  const panel = document.createElement("div");
-  panel.className = "item-menu-panel";
+    function endTextEdit() {
+      if (!editSnapshot) return;
+      if (editSnapshot !== JSON.stringify(state)) {
+        undoStack.push(editSnapshot);
+        if (undoStack.length > 60) undoStack.shift();
+        redoStack = [];
+      }
+      editSnapshot = null;
+      updateHistoryButtons();
+      persist();
+      renderPageList();
+    }
 
-  [
-    ["Удалить", () => deleteObject(item)],
-    ["За блоки", () => moveObject(item, "back")],
-    ["Поверх", () => moveObject(item, "front")]
-  ].forEach(([label, action]) => {
-    const a = document.createElement("button");
-    a.className = "item-action";
-    a.type = "button";
-    a.textContent = label;
-    a.addEventListener("click", e => {
-      e.stopPropagation();
+    function mutate(action) {
+      undoStack.push(JSON.stringify(state));
+      if (undoStack.length > 60) undoStack.shift();
+      redoStack = [];
       action();
-      menu.classList.remove("open");
-    });
-    panel.appendChild(a);
-  });
-
-  btn.addEventListener("click", e => {
-    e.stopPropagation();
-    setSelectedItem(item);
-    menu.classList.toggle("open");
-  });
-
-  menu.appendChild(btn);
-  menu.appendChild(panel);
-  return menu;
-}
-
-function createOverlayItem(src, index = 0, saved = null, pushHistory = true) {
-  if (pushHistory) saveHistory();
-
-  const item = document.createElement("div");
-  item.className = "overlay-item";
-  item.dataset.scale = saved?.scale ?? "1";
-  item.dataset.rotate = saved?.rotate ?? "0";
-  item.dataset.layer = saved?.layer ?? "front";
-  item.style.left = (saved?.left ?? (90 + index * 24)) + "px";
-  item.style.top = (saved?.top ?? (90 + index * 24)) + "px";
-  item.style.width = (saved?.width ?? 160) + "px";
-
-  const img = document.createElement("img");
-  img.src = src;
-  item.appendChild(img);
-  item.appendChild(createMenu(item));
-
-  (item.dataset.layer === "back" ? overlayBack : overlayFront).appendChild(item);
-
-  applyTransform(item);
-  enableObject(item);
-  setSelectedItem(item);
-}
-
-function enableObject(item) {
-  let activePointerId = null;
-  let startPointer = { x: 0, y: 0 };
-  let startPos = { left: 0, top: 0 };
-  let moved = false;
-
-  item.addEventListener("pointerdown", e => {
-    if (e.target.closest(".item-menu")) return;
-    e.preventDefault();
-    e.stopPropagation();
-    activePointerId = e.pointerId;
-    item.setPointerCapture(activePointerId);
-    item.classList.add("dragging");
-    setSelectedItem(item);
-    moved = false;
-    startPointer = getPosterRelativePoint(e.clientX, e.clientY);
-    startPos = {
-      left: parseFloat(item.style.left || "0"),
-      top: parseFloat(item.style.top || "0")
-    };
-  });
-
-  item.addEventListener("pointermove", e => {
-    if (activePointerId !== e.pointerId) return;
-    const p = getPosterRelativePoint(e.clientX, e.clientY);
-    const dx = p.x - startPointer.x;
-    const dy = p.y - startPointer.y;
-    if (Math.abs(dx) > 1 || Math.abs(dy) > 1) moved = true;
-    item.style.left = (startPos.left + dx) + "px";
-    item.style.top = (startPos.top + dy) + "px";
-  });
-
-  function finish(e) {
-    if (activePointerId !== e.pointerId) return;
-    item.releasePointerCapture(activePointerId);
-    activePointerId = null;
-    item.classList.remove("dragging");
-    if (moved) saveHistory();
-  }
-
-  item.addEventListener("pointerup", finish);
-  item.addEventListener("pointercancel", finish);
-
-  item.addEventListener("wheel", e => {
-    e.preventDefault();
-    e.stopPropagation();
-    setSelectedItem(item);
-    saveHistory();
-
-    if (e.shiftKey) {
-      let rotate = parseFloat(item.dataset.rotate || "0");
-      rotate += e.deltaY < 0 ? 5 : -5;
-      item.dataset.rotate = String(rotate);
-    } else {
-      let scale = parseFloat(item.dataset.scale || "1");
-      scale += e.deltaY < 0 ? 0.08 : -0.08;
-      scale = Math.max(0.15, Math.min(6, scale));
-      item.dataset.scale = String(scale);
+      persist();
+      render();
     }
 
-    applyTransform(item);
-  }, { passive: false });
+    function undo() {
+      const previous = undoStack.pop();
+      if (!previous) return;
+      redoStack.push(JSON.stringify(state));
+      state = JSON.parse(previous);
+      persist();
+      render();
+      showToast("Изменение отменено");
+    }
 
-  item.addEventListener("dblclick", e => {
-    e.stopPropagation();
-    deleteObject(item);
-  });
-}
+    function redo() {
+      const next = redoStack.pop();
+      if (!next) return;
+      undoStack.push(JSON.stringify(state));
+      state = JSON.parse(next);
+      persist();
+      render();
+      showToast("Изменение возвращено");
+    }
 
-function moveObject(item, layer) {
-  if (!item) return;
-  saveHistory();
-  item.dataset.layer = layer;
-  (layer === "back" ? overlayBack : overlayFront).appendChild(item);
-  setSelectedItem(item);
-}
+    function updateHistoryButtons() {
+      undoBtn.disabled = undoStack.length === 0;
+      redoBtn.disabled = redoStack.length === 0;
+    }
 
-function deleteObject(item) {
-  if (!item) return;
-  saveHistory();
-  if (selectedItem === item) selectedItem = null;
-  item.remove();
-}
+    function editable(tag, className, path, value, multiline = false) {
+      const element = document.createElement(tag);
+      element.className = className;
+      element.contentEditable = "plaintext-only";
+      element.spellcheck = true;
+      element.dataset.path = path;
+      element.textContent = value;
+      element.addEventListener("focus", beginTextEdit);
+      element.addEventListener("input", () => {
+        const nextValue = multiline ? element.innerText.trimEnd() : element.innerText.replace(/\n+/g, " ").trimStart();
+        setByPath(state, path, nextValue);
+        persist();
+      });
+      element.addEventListener("keydown", event => {
+        if (!multiline && event.key === "Enter") {
+          event.preventDefault();
+          element.blur();
+        }
+      });
+      element.addEventListener("blur", endTextEdit);
+      return element;
+    }
 
-titleInput.addEventListener("input", () => {
-  state.title = titleInput.value;
-  render();
-});
+    function basePoster(page, index) {
+      poster.className = `poster theme-${state.theme}`;
+      poster.style.setProperty("--bg-opacity", `${state.backgroundOpacity / 100}`);
+      poster.innerHTML = "";
 
-subtitleInput.addEventListener("input", () => {
-  state.subtitle = subtitleInput.value;
-  render();
-});
+      if (state.backgroundImage) {
+        const image = document.createElement("img");
+        image.className = "poster-bg-image";
+        image.src = state.backgroundImage;
+        image.alt = "";
+        poster.appendChild(image);
+      }
 
-vibeInput.addEventListener("input", () => {
-  state.vibe = vibeInput.value;
-  render();
-});
+      const shade = document.createElement("div");
+      shade.className = "poster-bg-shade";
+      poster.appendChild(shade);
 
-windowSelect.addEventListener("change", () => {
-  selectedWindow = Number(windowSelect.value);
-  render();
-});
+      const noise = document.createElement("div");
+      noise.className = "poster-noise";
+      poster.appendChild(noise);
 
-document.getElementById("addWindowBtn").addEventListener("click", () => {
-  saveHistory();
-  state.windows.push({
-    title: "Новое окно",
-    color: "#1edbff",
-    important: false,
-    items: ["Новый пункт"]
-  });
-  selectedWindow = state.windows.length - 1;
-  render();
-});
+      const inner = document.createElement("div");
+      inner.className = "poster-inner";
 
-document.getElementById("deleteWindowBtn").addEventListener("click", () => {
-  if (state.windows.length <= 1) return;
-  saveHistory();
-  state.windows.splice(selectedWindow, 1);
-  selectedWindow = Math.max(0, selectedWindow - 1);
-  render();
-});
+      const header = document.createElement("header");
+      header.className = "poster-header";
+      header.innerHTML = `<div class="poster-brand"><span class="poster-brand-ring" aria-hidden="true"></span><span>PK XD PORTAL</span></div><div class="page-index">0${index + 1} / 03</div>`;
+      inner.appendChild(header);
 
-document.getElementById("moveWindowUpBtn").addEventListener("click", () => {
-  if (selectedWindow <= 0) return;
-  saveHistory();
-  [state.windows[selectedWindow - 1], state.windows[selectedWindow]] = [state.windows[selectedWindow], state.windows[selectedWindow - 1]];
-  selectedWindow--;
-  render();
-});
+      const main = document.createElement("section");
+      main.className = "poster-main";
+      main.appendChild(editable("p", "poster-kicker", `pages.${index}.kicker`, page.kicker));
+      main.appendChild(editable("h1", "poster-title", `pages.${index}.title`, page.title, true));
+      main.appendChild(editable("p", "poster-subtitle", `pages.${index}.subtitle`, page.subtitle, true));
+      inner.appendChild(main);
 
-document.getElementById("moveWindowDownBtn").addEventListener("click", () => {
-  if (selectedWindow >= state.windows.length - 1) return;
-  saveHistory();
-  [state.windows[selectedWindow + 1], state.windows[selectedWindow]] = [state.windows[selectedWindow], state.windows[selectedWindow + 1]];
-  selectedWindow++;
-  render();
-});
+      const footer = document.createElement("footer");
+      footer.className = "poster-footer";
+      footer.appendChild(editable("span", "", `pages.${index}.footer`, page.footer, true));
+      const channel = document.createElement("strong");
+      channel.textContent = "t.me/pkxdportal";
+      footer.appendChild(channel);
+      inner.appendChild(footer);
 
-document.getElementById("applyWindowBtn").addEventListener("click", () => {
-  const win = state.windows[selectedWindow];
-  if (!win) return;
-  saveHistory();
-  win.title = windowTitleInput.value;
-  win.color = windowColorInput.value;
-  win.important = win.title.toLowerCase().includes("важно");
-  render();
-});
+      poster.appendChild(inner);
+      return main;
+    }
 
-document.getElementById("addPointBtn").addEventListener("click", () => {
-  const win = state.windows[selectedWindow];
-  if (!win) return;
-  saveHistory();
-  win.items.push("Новый пункт");
-  render();
-});
+    function renderPenalties(page, pageIndex, main) {
+      const grid = document.createElement("div");
+      grid.className = "penalty-grid";
 
-bgInput.addEventListener("change", async () => {
-  const file = bgInput.files?.[0];
-  if (!file) return;
-  saveHistory();
-  state.bgImage = await readFileAsDataURL(file);
-  render();
-  bgInput.value = "";
-});
+      page.sections.forEach((section, sectionIndex) => {
+        const path = `pages.${pageIndex}.sections.${sectionIndex}`;
+        const card = document.createElement("section");
+        card.className = "penalty-card";
+        card.style.setProperty("--level-color", section.color);
+        card.style.setProperty("--level-glow", `${section.color}66`);
+        card.style.setProperty("--level-border", hexToRgba(section.color, 0.34));
+        card.style.setProperty("--level-soft", hexToRgba(section.color, 0.1));
+        card.style.setProperty("--level-note-border", hexToRgba(section.color, 0.22));
+        card.style.setProperty("--level-note-soft", hexToRgba(section.color, 0.08));
 
-objInput.addEventListener("change", () => {
-  const files = Array.from(objInput.files || []);
-  files.forEach((file, i) => {
-    const r = new FileReader();
-    r.onload = e => createOverlayItem(e.target.result, i, null, true);
-    r.readAsDataURL(file);
-  });
-  objInput.value = "";
-});
+        const levelRow = document.createElement("div");
+        levelRow.className = "level-row";
+        levelRow.appendChild(editable("span", "level-number", `${path}.number`, section.number));
+        levelRow.appendChild(editable("span", "level-tag", `${path}.tag`, section.tag));
+        card.appendChild(levelRow);
+        card.appendChild(editable("h2", "penalty-name", `${path}.name`, section.name));
+        card.appendChild(editable("p", "penalty-duration", `${path}.duration`, section.duration));
 
-document.getElementById("toBackBtn").addEventListener("click", () => moveObject(selectedItem, "back"));
-document.getElementById("toFrontBtn").addEventListener("click", () => moveObject(selectedItem, "front"));
-document.getElementById("deleteObjBtn").addEventListener("click", () => deleteObject(selectedItem));
+        const list = document.createElement("ul");
+        list.className = "rule-list";
+        section.items.forEach((item, itemIndex) => {
+          const wrapper = document.createElement("li");
+          wrapper.className = "rule-item editable-wrap";
+          const dot = document.createElement("span");
+          dot.className = "rule-dot";
+          wrapper.appendChild(dot);
+          wrapper.appendChild(editable("span", "", `${path}.items.${itemIndex}`, item, true));
 
-backEditBtn.addEventListener("click", () => {
-  document.body.classList.toggle("back-edit-mode");
-  const enabled = document.body.classList.contains("back-edit-mode");
-  backEditBtn.classList.toggle("active", enabled);
-  setStatus(enabled ? "Режим задних объектов включён. Теперь можно брать объекты за блоками." : "Режим задних объектов выключен. Теперь можно выбирать окна.");
-});
+          if (section.items.length > 1) {
+            const remove = document.createElement("button");
+            remove.className = "remove-rule";
+            remove.type = "button";
+            remove.textContent = "×";
+            remove.title = "Удалить пункт";
+            remove.setAttribute("aria-label", "Удалить пункт");
+            remove.addEventListener("click", event => {
+              event.stopPropagation();
+              mutate(() => state.pages[pageIndex].sections[sectionIndex].items.splice(itemIndex, 1));
+            });
+            wrapper.appendChild(remove);
+          }
+          list.appendChild(wrapper);
+        });
+        card.appendChild(list);
 
-document.getElementById("undoBtn").addEventListener("click", () => {
-  const prev = historyStack.pop();
-  if (!prev) return;
-  restoreTemplate(JSON.parse(prev));
-});
+        const add = document.createElement("button");
+        add.className = "add-rule";
+        add.type = "button";
+        add.textContent = "+ Добавить пункт";
+        add.addEventListener("click", () => {
+          mutate(() => state.pages[pageIndex].sections[sectionIndex].items.push("Новый пункт"));
+        });
+        card.appendChild(add);
+        card.appendChild(editable("p", "card-note", `${path}.note`, section.note, true));
+        grid.appendChild(card);
+      });
+      main.appendChild(grid);
+    }
 
-document.getElementById("saveTemplateBtn").addEventListener("click", () => {
-  const data = getCurrentTemplate();
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "pkxd-rules-template.json";
-  a.click();
-  URL.revokeObjectURL(a.href);
-});
+    function renderFilters(page, pageIndex, main) {
+      main.appendChild(editable("p", "filters-intro", `pages.${pageIndex}.intro`, page.intro, true));
 
-templateInput.addEventListener("change", async () => {
-  const file = templateInput.files?.[0];
-  if (!file) return;
-  const data = JSON.parse(await file.text());
-  restoreTemplate(data);
-  templateInput.value = "";
-});
+      const chips = document.createElement("div");
+      chips.className = "filter-chips";
+      page.chips.forEach((chip, chipIndex) => {
+        chips.appendChild(editable("span", "filter-chip", `pages.${pageIndex}.chips.${chipIndex}`, chip));
+      });
+      main.appendChild(chips);
 
-document.getElementById("savePngBtn").addEventListener("click", async () => {
-  document.querySelectorAll(".overlay-item.selected").forEach(el => el.classList.remove("selected"));
-  document.querySelectorAll(".item-menu").forEach(el => el.classList.remove("open"));
+      const callout = document.createElement("section");
+      callout.className = "bot-callout";
+      callout.innerHTML = `<div class="bot-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="13" rx="4"></rect><path d="M9 11h.01M15 11h.01M9 16h6M12 7V4M10 4h4"></path></svg></div>`;
+      const botCopy = document.createElement("div");
+      botCopy.className = "bot-copy";
+      botCopy.appendChild(editable("small", "", `pages.${pageIndex}.botLabel`, page.botLabel));
+      botCopy.appendChild(editable("strong", "", `pages.${pageIndex}.bot`, page.bot));
+      callout.appendChild(botCopy);
+      callout.appendChild(editable("div", "bot-path", `pages.${pageIndex}.botPath`, page.botPath, true));
+      main.appendChild(callout);
 
-  const wasBackMode = document.body.classList.contains("back-edit-mode");
-  document.body.classList.remove("back-edit-mode");
+      const steps = document.createElement("div");
+      steps.className = "steps-grid";
+      page.steps.forEach((step, stepIndex) => {
+        const path = `pages.${pageIndex}.steps.${stepIndex}`;
+        const card = document.createElement("section");
+        card.className = "step-card";
+        card.appendChild(editable("span", "step-number", `${path}.number`, step.number));
+        card.appendChild(editable("h3", "", `${path}.title`, step.title, true));
+        card.appendChild(editable("p", "", `${path}.text`, step.text, true));
+        steps.appendChild(card);
+      });
+      main.appendChild(steps);
+    }
 
-  const canvas = await html2canvas(poster, {
-    scale: 3,
-    useCORS: true,
-    backgroundColor: null,
-    logging: false
-  });
+    function renderImportant(page, pageIndex, main) {
+      const scope = document.createElement("div");
+      scope.className = "scope-banner";
+      const badge = document.createElement("span");
+      badge.className = "scope-badge";
+      badge.textContent = "Где";
+      scope.appendChild(badge);
+      scope.appendChild(editable("span", "", `pages.${pageIndex}.scope`, page.scope, true));
+      main.appendChild(scope);
 
-  if (wasBackMode) document.body.classList.add("back-edit-mode");
-  if (selectedItem) selectedItem.classList.add("selected");
+      const outside = document.createElement("section");
+      outside.className = "outside-card";
+      outside.appendChild(editable("small", "", `pages.${pageIndex}.outsideLabel`, page.outsideLabel));
+      outside.appendChild(editable("p", "", `pages.${pageIndex}.outside`, page.outside, true));
+      main.appendChild(outside);
 
-  const a = document.createElement("a");
-  a.href = canvas.toDataURL("image/png");
-  a.download = "pkxdportal-rules.png";
-  a.click();
-});
+      const list = document.createElement("div");
+      list.className = "important-list";
+      page.important.forEach((item, itemIndex) => {
+        const card = document.createElement("section");
+        card.className = "important-item";
+        const icon = document.createElement("span");
+        icon.className = "important-icon";
+        icon.textContent = itemIndex === 0 ? "!" : "✓";
+        card.appendChild(icon);
+        card.appendChild(editable("p", "", `pages.${pageIndex}.important.${itemIndex}`, item, true));
+        list.appendChild(card);
+      });
+      main.appendChild(list);
 
-document.addEventListener("click", e => {
-  if (!e.target.closest(".overlay-item") && !e.target.closest(".rule-window")) {
-    setSelectedItem(null);
-  }
-});
+      const appeal = document.createElement("section");
+      appeal.className = "appeal-card";
+      const copy = document.createElement("div");
+      copy.appendChild(editable("small", "", `pages.${pageIndex}.appealLabel`, page.appealLabel));
+      copy.appendChild(editable("strong", "", `pages.${pageIndex}.appealText`, page.appealText, true));
+      appeal.appendChild(copy);
+      appeal.appendChild(editable("div", "appeal-link", `pages.${pageIndex}.appealLink`, page.appealLink));
+      main.appendChild(appeal);
+    }
 
-restoreTemplate(DEFAULT_STATE);
-</script>
+    function renderPage() {
+      const pageIndex = Math.max(0, Math.min(2, Number(state.activePage) || 0));
+      state.activePage = pageIndex;
+      const page = state.pages[pageIndex];
+      currentPageTitle.textContent = page.navTitle;
+      const main = basePoster(page, pageIndex);
+      if (page.id === "penalties") renderPenalties(page, pageIndex, main);
+      if (page.id === "filters") renderFilters(page, pageIndex, main);
+      if (page.id === "important") renderImportant(page, pageIndex, main);
+      requestAnimationFrame(fitPoster);
+    }
+
+    function renderPageList() {
+      pageList.innerHTML = "";
+      state.pages.forEach((page, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `page-button${index === state.activePage ? " active" : ""}`;
+        button.setAttribute("aria-current", index === state.activePage ? "page" : "false");
+
+        const number = document.createElement("span");
+        number.className = "page-number";
+        number.textContent = `0${index + 1}`;
+        const copy = document.createElement("span");
+        copy.className = "page-button-copy";
+        const strong = document.createElement("strong");
+        strong.textContent = page.navTitle;
+        const small = document.createElement("small");
+        small.textContent = page.navMeta;
+        copy.append(strong, small);
+        const chevron = document.createElement("span");
+        chevron.className = "page-chevron";
+        chevron.textContent = "›";
+        button.append(number, copy, chevron);
+        button.addEventListener("click", () => {
+          state.activePage = index;
+          persist();
+          render();
+        });
+        pageList.appendChild(button);
+      });
+    }
+
+    function renderControls() {
+      document.querySelectorAll("[data-theme]").forEach(button => {
+        button.classList.toggle("active", button.dataset.theme === state.theme);
+      });
+      backgroundOpacity.value = String(state.backgroundOpacity);
+      opacityValue.textContent = `${state.backgroundOpacity}%`;
+      document.getElementById("removeBackgroundBtn").disabled = !state.backgroundImage;
+      document.getElementById("previousPageBtn").disabled = state.activePage === 0;
+      document.getElementById("nextPageBtn").disabled = state.activePage === state.pages.length - 1;
+      updateHistoryButtons();
+    }
+
+    function render() {
+      renderPageList();
+      renderPage();
+      renderControls();
+    }
+
+    function fitPoster() {
+      const available = Math.max(280, posterViewport.clientWidth - 4);
+      const maxHeight = Math.max(400, window.innerHeight - 130);
+      const scale = Math.min(1, available / 1080, maxHeight / 1350);
+      poster.style.transform = `scale(${scale})`;
+      posterStage.style.width = `${1080 * scale}px`;
+      posterStage.style.height = `${1350 * scale}px`;
+      scaleValue.textContent = `${Math.round(scale * 100)}%`;
+    }
+
+    function showToast(message) {
+      clearTimeout(toastTimer);
+      toast.textContent = message;
+      toast.classList.add("show");
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
+    }
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    async function imageToDataUrl(file) {
+      const original = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const image = await new Promise((resolve, reject) => {
+        const value = new Image();
+        value.onload = () => resolve(value);
+        value.onerror = reject;
+        value.src = original;
+      });
+
+      const maxSize = 1800;
+      const scale = Math.min(1, maxSize / Math.max(image.width, image.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.max(1, Math.round(image.width * scale));
+      canvas.height = Math.max(1, Math.round(image.height * scale));
+      canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
+      return canvas.toDataURL("image/jpeg", 0.86);
+    }
+
+    function cleanCloneForExport() {
+      const copy = poster.cloneNode(true);
+      copy.classList.add("export-clean");
+      copy.style.transform = "none";
+      copy.querySelectorAll("[contenteditable]").forEach(element => element.removeAttribute("contenteditable"));
+      copy.querySelectorAll("button").forEach(element => element.remove());
+      const holder = document.createElement("div");
+      holder.style.position = "fixed";
+      holder.style.left = "-12000px";
+      holder.style.top = "0";
+      holder.style.width = "1080px";
+      holder.style.height = "1350px";
+      holder.style.zIndex = "-1000";
+      holder.appendChild(copy);
+      document.body.appendChild(holder);
+      return { copy, holder };
+    }
+
+    async function makeCanvas() {
+      if (typeof html2canvas !== "function") {
+        throw new Error("Модуль экспорта не загрузился. Открой файл с интернетом и повтори.");
+      }
+      const { copy, holder } = cleanCloneForExport();
+      try {
+        if (document.fonts?.ready) await document.fonts.ready;
+        return await html2canvas(copy, {
+          width: 1080,
+          height: 1350,
+          scale: 1,
+          useCORS: true,
+          backgroundColor: null,
+          logging: false
+        });
+      } finally {
+        holder.remove();
+      }
+    }
+
+    function canvasBlob(canvas) {
+      return new Promise((resolve, reject) => {
+        canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error("Не удалось создать PNG")), "image/png");
+      });
+    }
+
+    async function exportCurrent(silent = false) {
+      if (exporting) return;
+      exporting = true;
+      setExportButtons(true);
+      try {
+        const canvas = await makeCanvas();
+        const blob = await canvasBlob(canvas);
+        const page = state.pages[state.activePage];
+        downloadBlob(blob, `pkxd-portal-${state.activePage + 1}-${page.id}.png`);
+        if (!silent) showToast("Карточка сохранена в PNG");
+      } catch (error) {
+        showToast(error.message || "Не удалось сохранить карточку");
+      } finally {
+        exporting = false;
+        setExportButtons(false);
+      }
+    }
+
+    async function exportAll() {
+      if (exporting) return;
+      exporting = true;
+      setExportButtons(true);
+      const originalPage = state.activePage;
+      try {
+        for (let index = 0; index < state.pages.length; index += 1) {
+          state.activePage = index;
+          render();
+          await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+          const canvas = await makeCanvas();
+          const blob = await canvasBlob(canvas);
+          downloadBlob(blob, `pkxd-portal-${index + 1}-${state.pages[index].id}.png`);
+          await new Promise(resolve => setTimeout(resolve, 220));
+        }
+        showToast("Три карточки сохранены");
+      } catch (error) {
+        showToast(error.message || "Не удалось сохранить карточки");
+      } finally {
+        state.activePage = originalPage;
+        persist();
+        render();
+        exporting = false;
+        setExportButtons(false);
+      }
+    }
+
+    function setExportButtons(disabled) {
+      ["quickExportBtn", "exportCurrentBtn", "exportAllBtn"].forEach(id => {
+        document.getElementById(id).disabled = disabled;
+      });
+    }
+
+    function rulesAsText() {
+      const penalties = state.pages[0];
+      const filters = state.pages[1];
+      const important = state.pages[2];
+      const lines = [
+        "🖥 Правила чатов PK XD PORTAL",
+        "",
+        "Правила действуют только в наших чатах.",
+        ""
+      ];
+      penalties.sections.forEach(section => {
+        const label = section.name === "Мут" ? `${section.name} ${section.duration}` : section.name === "Бан" ? "Бан навсегда" : section.name;
+        lines.push(`🔵 ${label}`, "");
+        section.items.forEach(item => lines.push(`➤ ${item}`));
+        if (section.name === "Варн") lines.push("", "3 варна = бан.");
+        if (section.name === "Бан") lines.push("", section.note);
+        lines.push("");
+      });
+      lines.push(
+        "🛡 Личные фильтры",
+        "",
+        filters.intro,
+        `${filters.bot} → ${filters.botPath}.`,
+        `${filters.steps[1].title}: ${filters.steps[1].text}`,
+        `${filters.steps[2].title}: ${filters.steps[2].text}`,
+        "",
+        "❤ Важно",
+        "",
+        important.outside,
+        "",
+        ...important.important.map(item => `➤ ${item}`),
+        `➤ Снять некоторые наказания: https://${important.appealLink}`
+      );
+      return lines.join("\n");
+    }
+
+    async function copyText() {
+      try {
+        await navigator.clipboard.writeText(rulesAsText());
+        showToast("Текст правил скопирован");
+      } catch (error) {
+        const textarea = document.createElement("textarea");
+        textarea.value = rulesAsText();
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        textarea.remove();
+        showToast("Текст правил скопирован");
+      }
+    }
+
+    document.getElementById("themeGrid").addEventListener("click", event => {
+      const button = event.target.closest("[data-theme]");
+      if (!button || button.dataset.theme === state.theme) return;
+      mutate(() => { state.theme = button.dataset.theme; });
+    });
+
+    document.getElementById("chooseBackgroundBtn").addEventListener("click", () => backgroundInput.click());
+    document.getElementById("removeBackgroundBtn").addEventListener("click", () => {
+      if (!state.backgroundImage) return;
+      mutate(() => { state.backgroundImage = ""; });
+    });
+
+    backgroundInput.addEventListener("change", async () => {
+      const file = backgroundInput.files?.[0];
+      if (!file) return;
+      try {
+        const dataUrl = await imageToDataUrl(file);
+        mutate(() => { state.backgroundImage = dataUrl; });
+        showToast("Фон добавлен");
+      } catch (error) {
+        showToast("Не удалось открыть изображение");
+      }
+      backgroundInput.value = "";
+    });
+
+    backgroundOpacity.addEventListener("input", () => {
+      state.backgroundOpacity = Number(backgroundOpacity.value);
+      opacityValue.textContent = `${state.backgroundOpacity}%`;
+      poster.style.setProperty("--bg-opacity", `${state.backgroundOpacity / 100}`);
+      persist();
+    });
+
+    backgroundOpacity.addEventListener("pointerdown", () => {
+      opacitySnapshot = JSON.stringify(state);
+    });
+
+    backgroundOpacity.addEventListener("focus", () => {
+      if (!opacitySnapshot) opacitySnapshot = JSON.stringify(state);
+    });
+
+    backgroundOpacity.addEventListener("change", () => {
+      if (opacitySnapshot && opacitySnapshot !== JSON.stringify(state)) {
+        undoStack.push(opacitySnapshot);
+        if (undoStack.length > 60) undoStack.shift();
+        redoStack = [];
+        opacitySnapshot = null;
+        updateHistoryButtons();
+      }
+      renderControls();
+    });
+
+    backgroundOpacity.addEventListener("blur", () => {
+      opacitySnapshot = null;
+    });
+
+    undoBtn.addEventListener("click", undo);
+    redoBtn.addEventListener("click", redo);
+    document.getElementById("previousPageBtn").addEventListener("click", () => {
+      state.activePage = Math.max(0, state.activePage - 1);
+      persist();
+      render();
+    });
+    document.getElementById("nextPageBtn").addEventListener("click", () => {
+      state.activePage = Math.min(state.pages.length - 1, state.activePage + 1);
+      persist();
+      render();
+    });
+    document.getElementById("quickExportBtn").addEventListener("click", () => exportCurrent());
+    document.getElementById("exportCurrentBtn").addEventListener("click", () => exportCurrent());
+    document.getElementById("exportAllBtn").addEventListener("click", exportAll);
+    document.getElementById("copyTextBtn").addEventListener("click", copyText);
+
+    document.getElementById("saveProjectBtn").addEventListener("click", () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+      downloadBlob(blob, "pkxd-portal-rules-project.json");
+      showToast("Проект сохранён");
+    });
+
+    document.getElementById("openProjectBtn").addEventListener("click", () => projectInput.click());
+    projectInput.addEventListener("change", async () => {
+      const file = projectInput.files?.[0];
+      if (!file) return;
+      try {
+        const loaded = JSON.parse(await file.text());
+        if (!isValidState(loaded)) throw new Error("Неверный формат");
+        undoStack.push(JSON.stringify(state));
+        redoStack = [];
+        state = loaded;
+        persist();
+        render();
+        showToast("Проект открыт");
+      } catch (error) {
+        showToast("Этот файл не похож на проект правил");
+      }
+      projectInput.value = "";
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      const confirmed = window.confirm("Вернуть исходный текст новых правил и удалить текущие изменения?");
+      if (!confirmed) return;
+      mutate(() => {
+        const activePage = state.activePage;
+        state = clone(DEFAULT_STATE);
+        state.activePage = activePage;
+      });
+      showToast("Новые правила восстановлены");
+    });
+
+    document.addEventListener("keydown", event => {
+      const modifier = event.ctrlKey || event.metaKey;
+      if (modifier && event.key.toLowerCase() === "z" && !event.shiftKey) {
+        event.preventDefault();
+        undo();
+      }
+      if (modifier && (event.key.toLowerCase() === "y" || (event.key.toLowerCase() === "z" && event.shiftKey))) {
+        event.preventDefault();
+        redo();
+      }
+      if (!modifier && !event.target.closest("[contenteditable]") && event.key === "ArrowRight") {
+        state.activePage = Math.min(2, state.activePage + 1);
+        persist();
+        render();
+      }
+      if (!modifier && !event.target.closest("[contenteditable]") && event.key === "ArrowLeft") {
+        state.activePage = Math.max(0, state.activePage - 1);
+        persist();
+        render();
+      }
+    });
+
+    window.addEventListener("resize", fitPoster);
+    window.addEventListener("beforeunload", () => persist(true));
+    if (window.ResizeObserver) new ResizeObserver(fitPoster).observe(posterViewport);
+    render();
+  </script>
 </body>
 </html>
