@@ -3706,6 +3706,156 @@
       -webkit-backdrop-filter: none !important;
     }
 
+
+    /* ===== Square 1:1 PNG export fix v6 ===== */
+    /* html2canvas плохо смешивает несколько полупрозрачных слоёв, градиентов
+       и inset-теней. В режиме экспорта используем отдельный плоский набор
+       поверхностей. В редакторе оформление остаётся прежним. */
+
+    .poster.export-clean.theme-portal {
+      --export-card: #2a1844;
+      --export-card-2: #34204d;
+      --export-chip: #3a2854;
+      --export-line: rgba(255, 182, 239, .22);
+    }
+
+    .poster.export-clean.theme-ember {
+      --export-card: #351923;
+      --export-card-2: #41202b;
+      --export-chip: #4b2932;
+      --export-line: rgba(255, 213, 129, .22);
+    }
+
+    .poster.export-clean.theme-ice {
+      --export-card: #0c2740;
+      --export-card-2: #12334f;
+      --export-chip: #183c59;
+      --export-line: rgba(173, 234, 255, .22);
+    }
+
+    .poster.export-clean::after,
+    .poster.export-clean .poster-noise {
+      display: none !important;
+      content: none !important;
+    }
+
+    .poster.export-clean .poster-bg-image {
+      filter: none !important;
+    }
+
+    .poster.export-clean .poster-bg-shade {
+      opacity: .48 !important;
+      background: rgba(6, 8, 22, .72) !important;
+    }
+
+    /* Главное исправление: никакой подсветки редактируемых узлов в PNG.
+       data-path остаётся на элементах даже после удаления contenteditable. */
+    .poster.export-clean [data-path] {
+      background: transparent !important;
+      background-image: none !important;
+      box-shadow: none !important;
+      outline: none !important;
+      filter: none !important;
+      text-shadow: none;
+    }
+
+    .poster.export-clean .penalty-card,
+    .poster.export-clean .filters-intro,
+    .poster.export-clean .bot-callout,
+    .poster.export-clean .step-card,
+    .poster.export-clean .scope-banner,
+    .poster.export-clean .outside-card,
+    .poster.export-clean .important-item,
+    .poster.export-clean .appeal-card {
+      background: var(--export-card) !important;
+      background-image: none !important;
+      box-shadow: none !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      filter: none !important;
+    }
+
+    .poster.export-clean .card-note,
+    .poster.export-clean .bot-path,
+    .poster.export-clean .filter-chip,
+    .poster.export-clean .step-number,
+    .poster.export-clean .important-icon,
+    .poster.export-clean .appeal-link {
+      background-image: none !important;
+      box-shadow: none !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      filter: none !important;
+    }
+
+    .poster.export-clean .card-note,
+    .poster.export-clean .bot-path,
+    .poster.export-clean .filter-chip,
+    .poster.export-clean .step-number {
+      background: var(--export-card-2) !important;
+    }
+
+    /* Полоски-акценты делаем обычной границей. Псевдоэлементы в экспорте
+       отключаем, чтобы html2canvas не рисовал прямоугольные артефакты. */
+    .poster.export-clean .penalty-card::before,
+    .poster.export-clean .penalty-card::after,
+    .poster.export-clean .filters-intro::before,
+    .poster.export-clean .bot-callout::before,
+    .poster.export-clean .bot-callout::after,
+    .poster.export-clean .step-card::before,
+    .poster.export-clean .step-card::after,
+    .poster.export-clean .scope-banner::before,
+    .poster.export-clean .scope-banner::after,
+    .poster.export-clean .outside-card::before,
+    .poster.export-clean .outside-card::after,
+    .poster.export-clean .important-item::before,
+    .poster.export-clean .important-item::after,
+    .poster.export-clean .appeal-card::before,
+    .poster.export-clean .appeal-card::after {
+      display: none !important;
+      content: none !important;
+      box-shadow: none !important;
+    }
+
+    .poster.export-clean .penalty-card {
+      border-left: 5px solid var(--level-color) !important;
+    }
+
+    .poster.export-clean .filters-intro,
+    .poster.export-clean .step-card,
+    .poster.export-clean .outside-card {
+      border-left: 4px solid var(--poster-accent) !important;
+    }
+
+    .poster.export-clean .scope-banner,
+    .poster.export-clean .bot-callout,
+    .poster.export-clean .important-item,
+    .poster.export-clean .appeal-card {
+      border-color: var(--export-line) !important;
+    }
+
+    .poster.export-clean .appeal-card {
+      border-left: 5px solid var(--poster-accent) !important;
+    }
+
+    .poster.export-clean .appeal-link {
+      background: var(--poster-accent) !important;
+      color: #08101b !important;
+    }
+
+    .poster.export-clean .important-icon {
+      background: var(--poster-accent) !important;
+      color: #07101c !important;
+    }
+
+    .poster.export-clean .add-rule,
+    .poster.export-clean .remove-rule,
+    .poster.export-clean .filter-add,
+    .poster.export-clean .filter-remove,
+    .poster.export-clean .icon-editable::after {
+      display: none !important;
+    }
+
   </style>
 </head>
 <body>
@@ -4890,23 +5040,49 @@
       if (typeof html2canvas !== "function") {
         throw new Error("Модуль экспорта не загрузился. Открой файл с интернетом и повтори.");
       }
-      const { copy, holder } = cleanCloneForExport();
+
+      /* Раньше мы вручную клонировали постер и html2canvas клонировал его ещё
+         раз. На полупрозрачных flex/grid-блоках это могло давать тёмные
+         прямоугольники. Теперь html2canvas получает настоящий постер, а
+         чистый режим экспорта включается только на время снимка. */
+      const focused = document.activeElement;
+      if (focused && typeof focused.blur === "function") focused.blur();
+
+      const previousTransform = poster.style.transform;
+      poster.style.transform = "none";
+      poster.classList.add("export-clean");
+
       try {
         if (document.fonts?.ready) await document.fonts.ready;
-        return await html2canvas(copy, {
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+        return await html2canvas(poster, {
           width: POSTER_WIDTH,
           height: POSTER_HEIGHT,
           scale: 1,
           useCORS: true,
-          backgroundColor: null,
+          backgroundColor: "#090b20",
           logging: false,
           foreignObjectRendering: false,
           scrollX: 0,
           scrollY: 0,
-          imageTimeout: 15000
+          imageTimeout: 15000,
+          onclone: clonedDocument => {
+            const clonedPoster = clonedDocument.getElementById("poster");
+            if (!clonedPoster) return;
+            clonedPoster.classList.add("export-clean");
+            clonedPoster.style.transform = "none";
+            clonedPoster.querySelectorAll("[contenteditable]").forEach(element => {
+              element.removeAttribute("contenteditable");
+              element.removeAttribute("spellcheck");
+            });
+            clonedPoster.querySelectorAll("button").forEach(element => element.remove());
+          }
         });
       } finally {
-        holder.remove();
+        poster.classList.remove("export-clean");
+        poster.style.transform = previousTransform;
+        requestAnimationFrame(fitPoster);
       }
     }
 
