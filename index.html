@@ -3925,12 +3925,15 @@
     }
 
 
-    /* Global RU / EN language switcher */
+    /* RU / EN switcher. Visible only on the portal launcher. */
+    .portal-launcher-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
     .language-switcher {
-      position: fixed;
-      top: 82px;
-      right: 16px;
-      z-index: 5000;
+      flex: 0 0 auto;
       display: inline-flex;
       align-items: center;
       gap: 4px;
@@ -3961,23 +3964,25 @@
       box-shadow: 0 6px 18px rgba(255,121,220,.22);
     }
     @media (max-width: 700px) {
-      .language-switcher { top: 74px; right: 10px; }
+      .portal-launcher-top { align-items: flex-start; }
       .language-switcher button { min-width: 38px; height: 32px; padding: 0 8px; }
     }
 
   </style>
 </head>
 <body>
-  <div class="language-switcher" id="languageSwitcher" role="group" aria-label="Язык интерфейса">
-    <button type="button" data-language="ru">RU</button>
-    <button type="button" data-language="en">EN</button>
-  </div>
   <section class="portal-launcher" id="portalLauncher" aria-label="Выбор раздела">
     <div class="portal-launcher-inner">
       <div class="portal-launcher-panel">
-        <div class="portal-launcher-brand">
-          <img class="portal-launcher-logo" id="portalLauncherLogo" alt="">
-          <span>PK XD PORTAL</span>
+        <div class="portal-launcher-top">
+          <div class="portal-launcher-brand">
+            <img class="portal-launcher-logo" id="portalLauncherLogo" alt="">
+            <span>PK XD PORTAL</span>
+          </div>
+          <div class="language-switcher" id="languageSwitcher" role="group" aria-label="Язык интерфейса">
+            <button type="button" data-language="ru">RU</button>
+            <button type="button" data-language="en">EN</button>
+          </div>
         </div>
 
         <div class="portal-launcher-copy">
