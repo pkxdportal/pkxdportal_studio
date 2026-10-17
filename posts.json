@@ -1,0 +1,32 @@
+[
+  {
+    "title": "Добро пожаловать в PK XD PORTAL",
+    "slug": "добро-пожаловать-в-pk-xd-portal",
+    "date": "31.03.2026",
+    "author": "@pkxd_portal",
+    "description": "PK XD PORTAL это сообщество, посвящённое игре PK XD. Здесь вы увидите новости, события, трейды, общение и творчество участников.",
+    "category": "Главное",
+    "pinned": true,
+    "image": "assets/posts/1777725049662-photo2026-05-0214-16-57.jpg"
+  },
+  {
+    "title": "БАЗА ВЛАДЕЛЬЦА PK XD PORTAL",
+    "slug": "baza-owner",
+    "date": "03.04.2026",
+    "author": "@pkxd_portal",
+    "description": "Как стать владельцем в PK XD PORTAL",
+    "category": "Помощь порталу",
+    "pinned": false,
+    "image": ""
+  },
+  {
+    "title": "БАЗА АДМИНА PK XD PORTAL",
+    "slug": "baza-admin",
+    "date": "03.04.2026",
+    "author": "@pkxd_portal",
+    "description": "Как стать администратором в PK XD PORTAL",
+    "category": "Помощь порталу",
+    "pinned": false,
+    "image": ""
+  }
+]
