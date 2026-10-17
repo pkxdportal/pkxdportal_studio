@@ -10,8 +10,8 @@
   <meta property="og:title" content="PK XD PORTAL — Все разделы" />
   <meta property="og:description" content="Новости, правила, конструктор сундуков и редактор аватарок PK XD PORTAL" />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://pkxdportal.github.io/pkxd-portal-posts/" />
-  <meta property="og:image" content="https://pkxdportal.github.io/pkxd-portal-posts/assets/portal-badge.png" />
+  <meta property="og:url" content="https://pkxdportal.github.io/pkxdportal_studio/" />
+  <meta property="og:image" content="https://pkxdportal.github.io/pkxdportal_studio/assets/portal-badge.png" />
 
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -26,10 +26,11 @@
             src="assets/portal-badge.png"
             alt="Portal"
             class="hero-icon"
+            onerror="this.onerror=null;this.style.display='none';"
           />
           <div>
             <h1>PK XD PORTAL</h1>
-            <p class="subtitle">Новости, правила и творчество</p>
+            <p class="subtitle">Посты и новости</p>
           </div>
         </div>
 
@@ -41,23 +42,16 @@
       </div>
 
 
-      <nav class="portal-hub" aria-label="Разделы PK XD PORTAL">
+      <nav class="portal-hub" aria-label="Инструменты владельца" hidden>
         <div class="portal-hub-heading">
           <div>
-            <span class="portal-hub-eyebrow">ВСЁ В ОДНОМ МЕСТЕ</span>
-            <h2>Разделы портала</h2>
-            <p>Выбери раздел. Все инструменты и публикации доступны из одного сайта.</p>
+            <span class="portal-hub-eyebrow">УПРАВЛЕНИЕ</span>
+            <h2>Инструменты владельца</h2>
+            <p>Редакторы карточек, сундуков и аватарок доступны после входа.</p>
           </div>
-          <span class="portal-hub-counter">04 РАЗДЕЛА</span>
+          <span class="portal-hub-counter">03 ИНСТРУМЕНТА</span>
         </div>
         <div class="portal-hub-grid">
-          <a class="portal-hub-card hub-posts" href="#posts" aria-current="page">
-            <span class="portal-hub-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="M7 9h10M7 13h10M7 17h6"/></svg>
-            </span>
-            <span class="portal-hub-copy"><strong>Посты и новости</strong><small>События, новости и публикации PK XD PORTAL.</small></span>
-            <span class="portal-hub-cta">ЧИТАТЬ <span aria-hidden="true">↗</span></span>
-          </a>
           <a class="portal-hub-card hub-rules" href="studio.html#rules">
             <span class="portal-hub-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5c0 4.7 2.8 8.2 7 10 4.2-1.8 7-5.3 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>
@@ -178,9 +172,9 @@
 
   <script>
     const REPO_OWNER = "pkxdportal";
-    const REPO_NAME = "pkxd-portal-posts";
+    const REPO_NAME = "pkxdportal_studio";
     const DEFAULT_AUTHOR = "@pkxd_portal";
-    const SITE_URL = "https://pkxdportal.github.io/pkxd-portal-posts";
+    const SITE_URL = "https://pkxdportal.github.io/pkxdportal_studio";
     const LOGIN_URL = "https://pkxd-auth.turborussnezkiy.workers.dev/login";
 
     let allPosts = [];
@@ -288,7 +282,7 @@
         <div class="post-card">
           ${safePost.image ? `
             <a class="post-card-link" href="posts/${encodeURIComponent(safePost.slug)}.html">
-              <img class="post-card-image" src="${escapeAttr(safePost.image)}" alt="${escapeAttr(safePost.title)}" />
+              <img class="post-card-image" src="${escapeAttr(safePost.image)}" alt="${escapeAttr(safePost.title)}" onerror="this.onerror=null;this.src='assets/portal-badge.png';" />
             </a>
           ` : ""}
 
@@ -378,7 +372,17 @@
     }
 
     function login() {
-      window.location.href = LOGIN_URL;
+      // OAuth worker currently returns to the previous Pages path.
+      // That path shares localStorage with the new site on pkxdportal.github.io.
+      // Open login separately so the visitor remains on this site.
+      const loginWindow = window.open(LOGIN_URL, "pkxd_portal_owner_login", "popup,width=620,height=780");
+      if (!loginWindow) {
+        alert("Разреши всплывающее окно для входа или войди на прежней странице и вернись сюда.");
+        window.location.href = LOGIN_URL;
+      } else {
+        const loginBtn = document.getElementById("loginBtn");
+        loginBtn.textContent = "Заверши вход в открывшемся окне";
+      }
     }
 
     function logout() {
@@ -420,17 +424,20 @@
       const loginBtn = document.getElementById("loginBtn");
       const logoutBtn = document.getElementById("logoutBtn");
       const newPostBtn = document.getElementById("newPostBtn");
+      const ownerTools = document.querySelector(".portal-hub");
 
       if (token && loginValue === "pkxdportal") {
         document.body.classList.add("admin");
         loginBtn.classList.add("hidden");
         logoutBtn.classList.remove("hidden");
         newPostBtn.classList.remove("hidden");
+        ownerTools.hidden = false;
       } else {
         document.body.classList.remove("admin");
         loginBtn.classList.remove("hidden");
         logoutBtn.classList.add("hidden");
         newPostBtn.classList.add("hidden");
+        ownerTools.hidden = true;
       }
     }
 
@@ -1073,6 +1080,15 @@
 
     readAuthFromHash();
     updateAuthUI();
+    window.addEventListener("storage", (event) => {
+      if (event.key === "gh_token" || event.key === "gh_login") updateAuthUI();
+    });
+    window.addEventListener("focus", () => {
+      updateAuthUI();
+      if (document.body.classList.contains("admin")) {
+        document.getElementById("loginBtn").textContent = "Вход для владельцев";
+      }
+    });
     loadPosts();
   </script>
 </body>

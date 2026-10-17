@@ -72,7 +72,7 @@ export default {
       }
 
       const targetUrl =
-        "https://pkxdportal.github.io/pkxd-portal-posts/" +
+        "https://pkxdportal.github.io/pkxdportal_studio/" +
         "#gh_token=" + encodeURIComponent(accessToken) +
         "&gh_login=" + encodeURIComponent(user.login || "");
 

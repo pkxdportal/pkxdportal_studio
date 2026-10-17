@@ -773,3 +773,8 @@ body.admin .post-more-btn {
   .portal-hub-copy strong{font-size:18px}
   .portal-hub-cta{grid-column:2;grid-row:2}
 }
+
+
+/* Owner-only navigation stays hidden for visitors, including before scripts load. */
+.portal-hub, .portal-hub[hidden] { display: none !important; }
+body.admin .portal-hub:not([hidden]) { display: block !important; }
