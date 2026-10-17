@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Добро пожаловать в PK XD PORTAL</title>
+  <meta name="description" content="PK XD PORTAL это сообщество, посвящённое игре PK XD. Здесь вы увидите новости, события, трейды, общение и творчество участников." />
+  <meta property="og:title" content="Добро пожаловать в PK XD PORTAL" />
+  <meta property="og:description" content="PK XD PORTAL это сообщество, посвящённое игре PK XD. Здесь вы увидите новости, события, трейды, общение и творчество участников." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://pkxdportal.github.io/pkxd-portal-posts/posts/%D0%B4%D0%BE%D0%B1%D1%80%D0%BE-%D0%BF%D0%BE%D0%B6%D0%B0%D0%BB%D0%BE%D0%B2%D0%B0%D1%82%D1%8C-%D0%B2-pk-xd-portal.html" />
+  <meta property="og:image" content="https://pkxdportal.github.io/pkxd-portal-posts/assets/posts/1777725049662-photo2026-05-0214-16-57.jpg" />
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+  <div class="page-bg"></div>
+
+  <div class="post-page-wrap">
+    <div class="post-page">
+      <a class="back-link" href="../index.html">← Назад</a>
+
+      <div class="tag-row">
+        <span class="tag">Главное</span>
+        <span class="tag pin-tag">Закреплено</span>
+      </div>
+
+      
+        <div class="post-cover">
+          <img src="../assets/posts/1777725049662-photo2026-05-0214-16-57.jpg" alt="Добро пожаловать в PK XD PORTAL" />
+        </div>
+      
+
+      <h1>Добро пожаловать в PK XD PORTAL</h1>
+      <div class="meta">Автор: @pkxd_portal · 31.03.2026</div>
+
+      <div class="post-content">
+        <p>🎉 ДОБРО ПОЖАЛОВАТЬ В PK XD PORTAL 🤩</p><p>В этом канале тебя ждёт всё о мире PK XD, конкурсы, творчество от участников и много крутых вещей. Мы стараемся сделать Портал живым и удобным, чтобы сюда хотелось возвращаться. У нас есть добрые владельцы и админы, которые могут вам помочь во всём. Кстати о них можно почитать здесь: <a href="https://t.me/bio_owners_pkxdportal" target="_blank" rel="noopener noreferrer">https://t.me/bio_owners_pkxdportal</a> 😇</p><p>━━━━━━━</p><p>🌀 У нас портал распределён на три категории:</p><p>➤ PK XD PORTAL (<a href="https://t.me/pkxdportal)" target="_blank" rel="noopener noreferrer">https://t.me/pkxdportal)</a> — здесь выходят новости, фан-арты и вся основная информация, плюс общение.</p><p>➤ PK XD PORTAL TRADES (<a href="http://t.me/pkxdportal_trades)" target="_blank" rel="noopener noreferrer">http://t.me/pkxdportal_trades)</a> — место для безопасных обменов с системой доверия.</p><p>➤ PK XD PORTAL GAMES (<a href="https://t.me/pkxdportal_games)" target="_blank" rel="noopener noreferrer">https://t.me/pkxdportal_games)</a> — здесь проходят игровые события, активности и мини-игры.</p><p>Во все каналы и чаты можно зайти за три секунды. Нажмите на эту ссылку "<a href="https://t.me/addlist/aw6pZH4f0R01ZDUy"" target="_blank" rel="noopener noreferrer">https://t.me/addlist/aw6pZH4f0R01ZDUy"</a> и затем добавить. После этого у вас появится папка с порталами 🔥</p><p>━━━━━━━</p><p>Ознакомься теперь пожалуйста с правилами чата (<a href="https://t.me/pkxdportal/56)," target="_blank" rel="noopener noreferrer">https://t.me/pkxdportal/56),</a></p><p>чтобы поддерживать дружелюбную атмосферу 😊</p><p>━━━━━━━</p><p>😁 Спасибо, что вы с нами ❤️</p><p>🤩 ВСЕЛЕННАЯ ПОРТАЛА (<a href="https://t.me/addlist/aw6pZH4f0R01ZDUy)" target="_blank" rel="noopener noreferrer">https://t.me/addlist/aw6pZH4f0R01ZDUy)</a></p>
+      </div>
+
+      <div class="post-actions">
+        <button class="action-btn" id="likeBtn">❤️ Нравится</button>
+        <button class="action-btn" id="copyBtn">🔗 Копировать ссылку</button>
+        <span class="like-count" id="likeCount">Лайков: 0</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const slug = "добро-пожаловать-в-pk-xd-portal";
+    const likeKey = "likes_" + slug;
+    const likedKey = "liked_" + slug;
+
+    const countEl = document.getElementById("likeCount");
+    const likeBtn = document.getElementById("likeBtn");
+    const copyBtn = document.getElementById("copyBtn");
+
+    function refreshLikes() {
+      const count = parseInt(localStorage.getItem(likeKey) || "0", 10);
+      const liked = localStorage.getItem(likedKey) === "1";
+      countEl.textContent = "Лайков: " + count;
+      likeBtn.textContent = liked ? "💖 Лайк поставлен" : "❤️ Нравится";
+    }
+
+    likeBtn.addEventListener("click", () => {
+      const liked = localStorage.getItem(likedKey) === "1";
+      let count = parseInt(localStorage.getItem(likeKey) || "0", 10);
+
+      if (liked) {
+        count = Math.max(0, count - 1);
+        localStorage.setItem(likedKey, "0");
+      } else {
+        count += 1;
+        localStorage.setItem(likedKey, "1");
+      }
+
+      localStorage.setItem(likeKey, String(count));
+      refreshLikes();
+    });
+
+    copyBtn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        copyBtn.textContent = "✅ Ссылка скопирована";
+        setTimeout(() => {
+          copyBtn.textContent = "🔗 Копировать ссылку";
+        }, 1800);
+      } catch (e) {
+        alert("Не удалось скопировать ссылку");
+      }
+    });
+
+    refreshLikes();
+  </script>
+</body>
+</html>
