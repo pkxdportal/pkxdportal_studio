@@ -1,0 +1,155 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PK XD PORTAL — Управление постами</title><meta name="robots" content="noindex">
+<link rel="stylesheet" href="style.css"><script src="editor-access.js"></script>
+<style>
+*{box-sizing:border-box}body{color:#f9f4ff}.post-editor-container{max-width:1250px;margin:auto;padding:20px}
+.editor-header{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:8px 0 22px}
+.editor-header h1{font-size:clamp(24px,4vw,38px);margin:0}.editor-header a{color:#ffb7ed;text-decoration:none}
+.editor-status{padding:13px 17px;border:1px solid #524060;background:#191429;border-radius:14px;margin:0 0 15px;font-size:14px}
+.editor-status.error{border-color:#be557b;color:#ffabbf}
+.editor-status.ok{border-color:#499e7a;color:#a8f8d2}
+.editor-columns{display:grid;grid-template-columns:minmax(220px,320px) minmax(0,1fr);gap:20px}
+.editor-panel{border:1px solid #4c365d;background:#151225;border-radius:22px;padding:20px;min-width:0}
+.editor-panel h2{margin:0 0 12px;font-size:20px}
+.post-choice{display:block;width:100%;margin:7px 0;border:1px solid #4a3b5f;border-radius:12px;padding:12px;background:#211932;color:white;text-align:left;cursor:pointer}
+.post-choice small{display:block;color:#b9acc9;margin-top:5px}
+.post-choice.selected{border-color:#ff7cd4;background:#392343}
+.new-post{width:100%;padding:12px;border:1px solid #a65ec2;color:white;background:#59336f;border-radius:12px;cursor:pointer}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.field{display:block;margin-bottom:15px;color:#d2cbdf;font-size:13px;font-weight:600}
+.field input,.field textarea,.field select{display:block;width:100%;padding:12px 13px;margin-top:7px;border:1px solid #544468;border-radius:12px;background:#0c0c1c;color:white;font:inherit;font-weight:400}
+.field textarea{min-height:250px;resize:vertical;line-height:1.55;font-size:15px}
+.actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.actions button{padding:12px 16px;border-radius:12px;border:1px solid #76508c;background:#332345;color:white;cursor:pointer}
+.actions .publish{background:linear-gradient(125deg,#e55da7,#8656de);border:0;font-weight:700}
+.actions .delete{color:#ff9cb6}
+.info{color:#beb1cf;font-size:13px;line-height:1.6}
+#loginArea{max-width:460px;margin:60px auto;border:1px solid #684d7c;border-radius:20px;padding:26px;background:#1b142b}
+#loginArea input{width:100%;padding:13px;margin:10px 0;border:1px solid #604772;border-radius:10px;background:#0c0b19;color:white}
+#loginArea button{padding:12px 18px;border:0;border-radius:10px;background:#d16cc0;color:#180a1d;cursor:pointer;font-weight:700}
+#workArea[hidden],#loginArea[hidden]{display:none!important}
+@media(max-width:820px){.editor-columns{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}}
+</style></head><body><div class="page-bg"></div><div class="post-editor-container">
+<header class="editor-header"><div><a href="index.html">← Вернуться на главную</a><h1>Управление публикациями</h1></div><div><button class="owner-btn" type="button" id="logout">Закрыть редакторы</button></div></header>
+<div id="loginArea" hidden><h2>Вход для владельцев</h2><p class="info">Используй общий пароль редакторов. GitHub-аккаунт не требуется.</p><form id="loginForm"><input type="password" id="teamPass" placeholder="Пароль команды" required><button type="submit">Войти</button><p id="loginError" role="alert"></p></form></div>
+<div id="workArea" hidden>
+<div class="editor-status" id="status">Проверка сервера публикаций...</div>
+<div class="editor-columns"><aside class="editor-panel"><h2>Публикации</h2>
+<button id="newPost" class="new-post" type="button">+ Новый пост</button>
+<div id="postItems"></div>
+<p class="info">Изменения в черновиках сохраняются только в твоём браузере. Для публикации на сайте требуется подключённый сервер записи.</p></aside>
+<section class="editor-panel"><h2 id="formTitle">Новый пост</h2>
+<form id="postForm">
+<div class="form-grid"><label class="field">Заголовок<input id="title" required maxlength="180"></label><label class="field">Адрес поста (slug)<input id="slug" pattern="[a-zA-Z0-9а-яА-ЯёЁ_-]+" maxlength="100" placeholder="novost-portala"></label></div>
+<div class="form-grid"><label class="field">Категория<input id="category" value="Новости"></label><label class="field">Дата<input type="date" id="date"></label></div>
+<label class="field">Краткое описание<input id="description" maxlength="300"></label>
+<label class="field">Картинка поста: ссылка или путь assets/posts/...<input id="image" placeholder="assets/posts/..."></label>
+<label class="field">Загрузить картинку с компьютера<input type="file" id="imageUpload" accept="image/png,image/jpeg,image/webp"><span class="info">Выбранная картинка отправится на сервер при публикации.</span></label>
+<label class="field"><input type="checkbox" id="pinned" style="width:auto;display:inline-block"> Закрепить публикацию</label>
+<label class="field">Текст поста, отдельные абзацы с новой строки<textarea id="content" rows="14" placeholder="Напиши текст публикации..."></textarea></label>
+<div class="field">Пароль для записи на сервер<input type="password" id="publishPassword" placeholder="Пароль команды (понадобится при публикации)" autocomplete="off"></div>
+<div class="actions">
+<button type="button" id="draft">Сохранить черновик</button>
+<button type="submit" class="publish">Опубликовать на сайте</button>
+<button type="button" id="deletePost" class="delete">Удалить публикацию</button>
+</div>
+<p class="info">Сохранение черновика не меняет сайт. Кнопка публикации работает только после настройки серверного API.</p>
+</form></section></div></div></div>
+<script>
+(()=>{"use strict";
+const API="https://pkxd-auth.turborussnezkiy.workers.dev";
+const DRAFTS_KEY="pkxd_posts_local_drafts_v1";
+const $=id=>document.getElementById(id);
+let posts=[],drafts={},currentSlug="",photo=null,remoteReady=false;
+const e=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function flash(text,error=false){$("status").textContent=text;$("status").className="editor-status "+(error?"error":"ok");}
+function today(){return new Date().toLocaleDateString("en-CA");}
+function toISO(v){const m=String(v||"").match(/^(\d{2})\.(\d{2})\.(\d{4})$/);return m?`${m[3]}-${m[2]}-${m[1]}`:today();}
+function toRU(v){const m=String(v||"").match(/^(\d{4})-(\d{2})-(\d{2})$/);return m?`${m[3]}.${m[2]}.${m[1]}`:v;}
+function slugify(v){return String(v||"").toLowerCase().trim().replace(/[^a-z0-9а-яё_-]+/ig,"-").replace(/^-+|-+$/g,"").slice(0,95);}
+function formData(){const title=$("title").value.trim();return{title,slug:slugify($("slug").value||title),date:toRU($("date").value||today()),category:$("category").value.trim()||"Новости",description:$("description").value.trim(),image:$("image").value.trim(),pinned:$("pinned").checked,author:"@pkxd_portal",content:$("content").value};}
+function fill(p){$("formTitle").textContent=p?.title?"Редактирование поста":"Новый пост";$("title").value=p?.title||"";$("slug").value=p?.slug||"";$("date").value=toISO(p?.date);$("category").value=p?.category||"Новости";$("description").value=p?.description||"";$("image").value=p?.image||"";$("pinned").checked=!!p?.pinned;$("content").value=p?.content||"";photo=null;$("imageUpload").value="";}
+async function loadBody(slug){
+ try{const r=await fetch("posts/"+encodeURIComponent(slug)+".html",{cache:"no-store"});if(!r.ok)return"";
+ const doc=new DOMParser().parseFromString(await r.text(),"text/html");
+ const content=doc.querySelector(".post-content");
+ return content?[...content.querySelectorAll("p")].map(p=>p.textContent).join("\n"):"";
+ }catch{return"";}
+}
+function renderChoices(){
+ const values=[...posts.map(p=>({...p,_draft:false})),...Object.values(drafts).filter(x=>!posts.some(p=>p.slug===x.slug)).map(p=>({...p,_draft:true}))];
+ $("postItems").innerHTML=values.map(p=>`<button class="post-choice ${p.slug===currentSlug?"selected":""}" type="button" data-slug="${e(p.slug)}"><strong>${e(p.title)}</strong><small>${e(p.category||"")}${drafts[p.slug]?" · черновик":""}</small></button>`).join("");
+ $("postItems").querySelectorAll("[data-slug]").forEach(btn=>btn.addEventListener("click",()=>choose(btn.dataset.slug)));
+}
+async function choose(slug){
+ currentSlug=slug;
+ const p=drafts[slug]||posts.find(p=>p.slug===slug);
+ if(!p)return;
+ fill({...p,content:p.content!==undefined?p.content:await loadBody(slug)});
+ renderChoices();
+}
+function newPost(){currentSlug="";fill(null);renderChoices();}
+async function loadPosts(){
+ try{const r=await fetch("posts.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw Error("Не загружен posts.json");posts=await r.json();}
+ catch(err){flash("Не удалось загрузить публикации: "+err.message,true);}
+ try{drafts=JSON.parse(localStorage.getItem(DRAFTS_KEY))||{};}catch{drafts={};}
+ renderChoices();newPost();
+}
+function saveDraft(){
+ const d=formData();if(!d.title||!d.slug){flash("Заполни заголовок и адрес поста.",true);return;}
+ if(currentSlug && currentSlug!==d.slug)delete drafts[currentSlug];
+ drafts[d.slug]=d;
+ try{localStorage.setItem(DRAFTS_KEY,JSON.stringify(drafts));currentSlug=d.slug;renderChoices();flash("Черновик сохранён в браузере. Сайт пока не изменился.");}
+ catch{flash("Не удалось сохранить черновик. Возможно, браузер переполнен.",true);}
+}
+async function status(){
+ try{const r=await fetch(API+"/api/health",{cache:"no-store"});const data=await r.json();remoteReady=!!data.ready;flash(remoteReady?"Сервер публикаций готов. Можно сохранять посты на сайт.":"Сервер публикаций ещё не настроен. Можно создавать локальные черновики.",!remoteReady);}
+ catch{remoteReady=false;flash("Сервер публикаций недоступен. Пока доступны только локальные черновики.",true);}
+}
+async function api(method,path,payload){
+ const pass=$("publishPassword").value.trim()||PKXDEditorAccess.getSessionPassword();
+ if(!pass)throw Error("Введи пароль для публикации.");
+ const r=await fetch(API+path,{method,headers:{"Content-Type":"application/json","X-Portal-Password":pass},body:payload?JSON.stringify(payload):undefined});
+ const d=await r.json().catch(()=>({error:"Ошибка ответа сервера"}));
+ if(!r.ok)throw Error(d.error||"Ошибка сервера: "+r.status);
+ return d;
+}
+async function publish(ev){
+ ev.preventDefault();
+ if(!remoteReady){saveDraft();flash("Публикация пока невозможна: сервер не настроен. Черновик сохранён локально.",true);return;}
+ const data=formData();if(!data.title||!data.slug){flash("Заполни название и адрес поста.",true);return;}
+ const button=$("postForm").querySelector('[type="submit"]');button.disabled=true;
+ try{
+   if(photo){const image=await api("POST","/api/images",photo);data.image=image.path;}
+   await api("POST","/api/posts",{post:data,oldSlug:currentSlug||null});
+   if(currentSlug&&currentSlug!==data.slug)delete drafts[currentSlug];delete drafts[data.slug];localStorage.setItem(DRAFTS_KEY,JSON.stringify(drafts));
+   flash("Опубликовано на сайте. Изменения появятся после обновления GitHub Pages.");
+   currentSlug=data.slug;await loadPosts();await choose(data.slug);
+ }catch(err){saveDraft();flash("Не опубликовано: "+err.message+" Черновик сохранён в браузере.",true);}
+ finally{button.disabled=false;}
+}
+async function remove(){
+ if(!currentSlug)return;
+ if(!confirm("Удалить публикацию «"+currentSlug+"»?"))return;
+ if(drafts[currentSlug]){delete drafts[currentSlug];localStorage.setItem(DRAFTS_KEY,JSON.stringify(drafts));if(!posts.some(p=>p.slug===currentSlug)){flash("Локальный черновик удалён.");newPost();renderChoices();return;}}
+ if(!remoteReady){flash("Удаление с сайта недоступно без сервера публикаций.",true);return;}
+ try{await api("DELETE","/api/posts/"+encodeURIComponent(currentSlug));flash("Публикация удалена с сервера.");await loadPosts();}
+ catch(err){flash("Не удалось удалить: "+err.message,true);}
+}
+$("loginForm").addEventListener("submit",async event=>{event.preventDefault();const pass=$("teamPass").value;const ok=await PKXDEditorAccess.unlock(pass);if(!ok){$("loginError").textContent="Неверный пароль.";return;}show();});
+$("logout").onclick=()=>{PKXDEditorAccess.lock();location.replace("index.html");};
+$("newPost").onclick=newPost;$("draft").onclick=saveDraft;$("postForm").onsubmit=publish;$("deletePost").onclick=remove;
+$("imageUpload").addEventListener("change",async event=>{
+ const f=event.target.files?.[0];if(!f)return;
+ if(f.size>2500000){flash("Картинка слишком большая. Максимум 2,5 МБ.",true);return;}
+ const data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(f);});
+ photo={name:f.name,data};flash("Картинка выбрана. Она загрузится вместе с публикацией.");
+});
+function show(){
+ const ok=PKXDEditorAccess.isUnlocked();
+ $("loginArea").hidden=ok;$("workArea").hidden=!ok;
+ if(ok){$("publishPassword").value=PKXDEditorAccess.getSessionPassword();loadPosts();status();}
+}
+show();
+})();
+</script></body></html>
