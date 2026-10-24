@@ -66,19 +66,8 @@ if(!window.PKXDEditorAccess || !PKXDEditorAccess.isUnlocked()) location.replace(
       .poster-main-penalties .rule-item [contenteditable]{font-size:inherit!important;line-height:inherit!important}
      `;
    d.head.appendChild(st);
-   const oldFit=w.fitAdaptiveText;
-   if(typeof oldFit==="function") {
-      w.fitAdaptiveText=function(){
-       if(d.querySelector(".poster-main-penalties") && !d.getElementById("rulesModule")?.hidden) {
-         d.querySelectorAll(".poster-main-penalties .rule-item").forEach(item => {
-            item.style.removeProperty("font-size");
-            item.style.removeProperty("line-height");
-         });
-         return;
-       }
-       return oldFit.apply(this,arguments);
-      };
-   }
+   // Оставляем адаптацию заметок и названий. Только пункты правил
+   // закреплены читаемым размером через CSS !important.
    // Старая кнопка переключения должна возвращать на основную страницу.
    d.addEventListener("click",event=>{
       if(event.target.closest("#portalSwitcherBtn")){event.preventDefault();event.stopImmediatePropagation();returnHome();}
