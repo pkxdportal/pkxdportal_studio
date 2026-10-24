@@ -1,11 +1,50 @@
 <!doctype html>
-<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>PK XD PORTAL — Инструменты владельца</title>
-<style>body{font-family:Arial,sans-serif;background:#0b0918;color:#f7f8ff;display:grid;place-items:center;min-height:90vh;padding:20px}main{max-width:480px;text-align:center}a{color:#ff74d8}</style>
-<script>
-(function(){
-  let owner=false;
-  try { owner=localStorage.getItem("gh_login")==="pkxdportal" && !!localStorage.getItem("gh_token"); }catch(e){}
-  if(owner){ location.replace("studio-app.html"+location.hash); }
-  else { location.replace("index.html"); }
-})();
-</script></head><body><main><p>Проверка доступа к редакторам...</p><p><a href="index.html">Перейти к публикациям</a></p></main></body></html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>PK XD PORTAL — Доступ к редакторам</title>
+  <script src="editor-access.js"></script>
+  <style>
+  *{box-sizing:border-box} body{font-family:Arial,sans-serif;background:#0b0918;color:#f7f8ff;display:grid;place-items:center;min-height:100vh;margin:0;padding:20px}
+  main{width:100%;max-width:440px;padding:26px;background:#181127;border:1px solid #53335c;border-radius:22px}
+  h1{font-size:25px;margin:0 0 10px}p{color:#c3bdd4;line-height:1.5}label{display:block;margin:20px 0 8px;font-size:14px}
+  input{display:block;width:100%;font-size:17px;padding:13px;background:#0d0b18;color:#fff;border:1px solid #674c7d;border-radius:12px}
+  button{cursor:pointer;margin-top:14px;width:100%;padding:13px;border:0;border-radius:12px;color:white;background:linear-gradient(120deg,#d866bd,#866bea);font-weight:700}
+  a{color:#ff9add}.error{color:#ff91a3;min-height:20px}
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Редакторы PK XD PORTAL</h1>
+    <p>Введите общий пароль. Доступ к GitHub не требуется.</p>
+    <form id="editorForm">
+      <label for="password">Пароль редакторов</label>
+      <input id="password" type="password" required autocomplete="off" autofocus>
+      <p id="error" class="error" role="alert" aria-live="polite"></p>
+      <button type="submit">Открыть редакторы</button>
+    </form>
+    <p><a href="index.html">Вернуться к публикациям</a></p>
+  </main>
+  <script>
+    function enter() { location.replace("studio-app.html" + location.hash); }
+    if (PKXDEditorAccess.isUnlocked()) enter();
+    document.getElementById("editorForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      const field = document.getElementById("password");
+      const button = event.currentTarget.querySelector("button");
+      button.disabled = true;
+      try {
+        if (await PKXDEditorAccess.unlock(field.value)) enter();
+        else {
+          document.getElementById("error").textContent = "Неверный пароль.";
+          field.select();
+        }
+      } catch (e) {
+        document.getElementById("error").textContent = "Ошибка проверки пароля. Обнови страницу.";
+      } finally { button.disabled = false; }
+    });
+  </script>
+</body>
+</html>

@@ -777,4 +777,23 @@ body.admin .post-more-btn {
 
 /* Owner-only navigation stays hidden for visitors, including before scripts load. */
 .portal-hub, .portal-hub[hidden] { display: none !important; }
-body.admin .portal-hub:not([hidden]) { display: block !important; }
+body.editor-unlocked .portal-hub:not([hidden]) { display: block !important; }
+
+/* Shared-password entry point; no editor section is shown before unlocking. */
+.editor-auth-dialog {
+  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:min(440px,calc(100vw - 32px)); max-height:calc(100vh - 40px);
+  padding:25px; margin:0; overflow-y:auto; z-index:100;
+  border:1px solid rgba(255,121,220,.33); border-radius:22px;
+  background:#161225; color:#f7f8ff; box-shadow:0 30px 100px rgba(0,0,0,.65);
+}
+.editor-auth-dialog::backdrop { background:rgba(3,3,13,.80); backdrop-filter:blur(5px) }
+.editor-auth-dialog h2 { margin:0 0 10px; font-size:24px }
+.editor-auth-dialog p { color:#c3bed3; font-size:14px; line-height:1.55 }
+.editor-auth-dialog label { display:block; margin:20px 0 7px; font-size:13px; font-weight:700 }
+.editor-auth-dialog input { width:100%; box-sizing:border-box; border:1px solid #665275; border-radius:12px;
+  padding:12px 14px; background:#0b0b1a; color:white; font-size:17px; }
+.editor-auth-dialog input:focus-visible { outline:2px solid #ff74d8; outline-offset:2px }
+.editor-auth-dialog .editor-auth-error { min-height:22px; margin:9px 0; color:#ff8ba1 }
+.editor-auth-actions { display:flex; gap:9px; justify-content:flex-end; flex-wrap:wrap }
+.editor-auth-submit { background:linear-gradient(120deg,#d866bd,#866bea); color:white; }

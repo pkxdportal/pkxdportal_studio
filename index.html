@@ -36,8 +36,10 @@
 
         <div class="owner-actions">
           <button id="newPostBtn" class="owner-btn hidden" type="button" onclick="openCreateModal()">+ Новый пост</button>
-          <button id="loginBtn" class="owner-btn" type="button" onclick="login()">Вход для владельцев</button>
-          <button id="logoutBtn" class="owner-btn hidden" type="button" onclick="logout()">Выйти</button>
+          <button id="editorAccessBtn" class="owner-btn" type="button" onclick="openEditorLogin()">🔒 Вход в редакторы</button>
+          <button id="editorLogoutBtn" class="owner-btn hidden" type="button" onclick="lockEditors()">Закрыть редакторы</button>
+          <button id="loginBtn" class="owner-btn" type="button" onclick="login()">Вход для публикаций</button>
+          <button id="logoutBtn" class="owner-btn hidden" type="button" onclick="logout()">Выйти из GitHub</button>
         </div>
       </div>
 
@@ -47,7 +49,7 @@
           <div>
             <span class="portal-hub-eyebrow">УПРАВЛЕНИЕ</span>
             <h2>Инструменты владельца</h2>
-            <p>Редакторы карточек, сундуков и аватарок доступны после входа.</p>
+            <p>Правила, сундуки и аватарки. Доступ по общему паролю.</p>
           </div>
           <span class="portal-hub-counter">03 ИНСТРУМЕНТА</span>
         </div>
@@ -168,7 +170,23 @@
     </div>
   </div>
 
+  <dialog id="editorAccessDialog" class="editor-auth-dialog" aria-labelledby="editorAccessTitle">
+    <form id="editorAccessForm" onsubmit="submitEditorPassword(event)">
+      <h2 id="editorAccessTitle">Вход в редакторы</h2>
+      <p>Введи общий пароль команды, чтобы открыть правила, сундуки и аватарки. GitHub не нужен.</p>
+      <label for="editorPassword">Пароль</label>
+      <input id="editorPassword" type="password" placeholder="Пароль редакторов" autocomplete="off" required spellcheck="false" />
+      <p id="editorAccessError" class="editor-auth-error" role="alert" aria-live="polite"></p>
+      <div class="editor-auth-actions">
+        <button class="owner-btn" type="button" onclick="closeEditorLogin()">Отмена</button>
+        <button class="owner-btn editor-auth-submit" type="submit">Открыть редакторы</button>
+      </div>
+    </form>
+  </dialog>
+
   <div id="adminMenu" class="admin-menu hidden"></div>
+
+  <script src="editor-access.js"></script>
 
   <script>
     const REPO_OWNER = "pkxdportal";
@@ -420,25 +438,61 @@
     function updateAuthUI() {
       const token = localStorage.getItem("gh_token");
       const loginValue = localStorage.getItem("gh_login");
+      const isGitHubOwner = Boolean(token && loginValue === "pkxdportal");
 
-      const loginBtn = document.getElementById("loginBtn");
-      const logoutBtn = document.getElementById("logoutBtn");
-      const newPostBtn = document.getElementById("newPostBtn");
-      const ownerTools = document.querySelector(".portal-hub");
+      document.body.classList.toggle("admin", isGitHubOwner);
+      document.getElementById("loginBtn").classList.toggle("hidden", isGitHubOwner);
+      document.getElementById("logoutBtn").classList.toggle("hidden", !isGitHubOwner);
+      document.getElementById("newPostBtn").classList.toggle("hidden", !isGitHubOwner);
 
-      if (token && loginValue === "pkxdportal") {
-        document.body.classList.add("admin");
-        loginBtn.classList.add("hidden");
-        logoutBtn.classList.remove("hidden");
-        newPostBtn.classList.remove("hidden");
-        ownerTools.hidden = false;
-      } else {
-        document.body.classList.remove("admin");
-        loginBtn.classList.remove("hidden");
-        logoutBtn.classList.add("hidden");
-        newPostBtn.classList.add("hidden");
-        ownerTools.hidden = true;
+      const editorsOpen = window.PKXDEditorAccess.isUnlocked();
+      document.body.classList.toggle("editor-unlocked", editorsOpen);
+      document.querySelector(".portal-hub").hidden = !editorsOpen;
+      document.getElementById("editorAccessBtn").classList.toggle("hidden", editorsOpen);
+      document.getElementById("editorLogoutBtn").classList.toggle("hidden", !editorsOpen);
+    }
+
+    function openEditorLogin() {
+      const dialog = document.getElementById("editorAccessDialog");
+      document.getElementById("editorPassword").value = "";
+      document.getElementById("editorAccessError").textContent = "";
+      dialog.showModal();
+      document.getElementById("editorPassword").focus();
+    }
+
+    function closeEditorLogin() {
+      document.getElementById("editorAccessDialog").close();
+    }
+
+    async function submitEditorPassword(event) {
+      event.preventDefault();
+      const field = document.getElementById("editorPassword");
+      const error = document.getElementById("editorAccessError");
+      const submit = event.currentTarget.querySelector('[type="submit"]');
+      submit.disabled = true;
+      error.textContent = "";
+      try {
+        const valid = await window.PKXDEditorAccess.unlock(field.value);
+        if (!valid) {
+          error.textContent = "Неверный пароль. Попробуй ещё раз.";
+          field.focus();
+          field.select();
+          return;
+        }
+        closeEditorLogin();
+        updateAuthUI();
+        document.querySelector(".portal-hub").scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (e) {
+        error.textContent = "Не удалось проверить пароль. Перезагрузи страницу.";
+        console.error(e);
+      } finally {
+        submit.disabled = false;
       }
+    }
+
+    function lockEditors() {
+      window.PKXDEditorAccess.lock();
+      updateAuthUI();
     }
 
     function isAdmin() {
@@ -1081,12 +1135,12 @@
     readAuthFromHash();
     updateAuthUI();
     window.addEventListener("storage", (event) => {
-      if (event.key === "gh_token" || event.key === "gh_login") updateAuthUI();
+      if (event.key === "gh_token" || event.key === "gh_login" || event.key === PKXDEditorAccess.storageKey) updateAuthUI();
     });
     window.addEventListener("focus", () => {
       updateAuthUI();
       if (document.body.classList.contains("admin")) {
-        document.getElementById("loginBtn").textContent = "Вход для владельцев";
+        document.getElementById("loginBtn").textContent = "Вход для публикаций";
       }
     });
     loadPosts();
