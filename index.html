@@ -35,11 +35,8 @@
         </div>
 
         <div class="owner-actions">
-          <button id="newPostBtn" class="owner-btn hidden" type="button" onclick="openCreateModal()">+ Новый пост</button>
-          <button id="editorAccessBtn" class="owner-btn" type="button" onclick="openEditorLogin()">🔒 Вход в редакторы</button>
-          <button id="editorLogoutBtn" class="owner-btn hidden" type="button" onclick="lockEditors()">Закрыть редакторы</button>
-          <button id="loginBtn" class="owner-btn" type="button" onclick="login()">Вход для публикаций</button>
-          <button id="logoutBtn" class="owner-btn hidden" type="button" onclick="logout()">Выйти из GitHub</button>
+          <button id="editorAccessBtn" class="owner-btn" type="button" onclick="openEditorLogin()">Вход для владельцев</button>
+          <button id="editorLogoutBtn" class="owner-btn hidden" type="button" onclick="lockEditors()">Выйти из редакторов</button>
         </div>
       </div>
 
@@ -54,21 +51,21 @@
           <span class="portal-hub-counter">03 ИНСТРУМЕНТА</span>
         </div>
         <div class="portal-hub-grid">
-          <a class="portal-hub-card hub-rules" href="studio.html#rules">
+          <a class="portal-hub-card hub-rules" href="studio-app.html#rules">
             <span class="portal-hub-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5c0 4.7 2.8 8.2 7 10 4.2-1.8 7-5.3 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>
             </span>
             <span class="portal-hub-copy"><strong>Студия правил</strong><small>Меняй карточки правил и сохраняй изображения.</small></span>
             <span class="portal-hub-cta">ОТКРЫТЬ <span aria-hidden="true">↗</span></span>
           </a>
-          <a class="portal-hub-card hub-chests" href="studio.html#chests">
+          <a class="portal-hub-card hub-chests" href="studio-app.html#chests">
             <span class="portal-hub-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16v11H4zM3 5h18v4H3zM9 9v3h6V9M12 12v8"/></svg>
             </span>
             <span class="portal-hub-copy"><strong>Конструктор сундуков</strong><small>Собирай шаблоны и серии карточек с фото.</small></span>
             <span class="portal-hub-cta">СОЗДАТЬ <span aria-hidden="true">↗</span></span>
           </a>
-          <a class="portal-hub-card hub-avatars" href="studio.html#avatars">
+          <a class="portal-hub-card hub-avatars" href="studio-app.html#avatars">
             <span class="portal-hub-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="3.2"/><path d="M5.5 20c.8-4 3-6 6.5-6s5.7 2 6.5 6M18.5 3.5v3M17 5h3"/></svg>
             </span>
@@ -173,7 +170,7 @@
   <dialog id="editorAccessDialog" class="editor-auth-dialog" aria-labelledby="editorAccessTitle">
     <form id="editorAccessForm" onsubmit="submitEditorPassword(event)">
       <h2 id="editorAccessTitle">Вход в редакторы</h2>
-      <p>Введи общий пароль команды, чтобы открыть правила, сундуки и аватарки. GitHub не нужен.</p>
+      <p>Введи пароль команды. После входа откроются три редактора.</p>
       <label for="editorPassword">Пароль</label>
       <input id="editorPassword" type="password" placeholder="Пароль редакторов" autocomplete="off" required spellcheck="false" />
       <p id="editorAccessError" class="editor-auth-error" role="alert" aria-live="polite"></p>
@@ -193,7 +190,6 @@
     const REPO_NAME = "pkxdportal_studio";
     const DEFAULT_AUTHOR = "@pkxd_portal";
     const SITE_URL = "https://pkxdportal.github.io/pkxdportal_studio";
-    const LOGIN_URL = "https://pkxd-auth.turborussnezkiy.workers.dev/login";
 
     let allPosts = [];
     let activeMenuSlug = null;
@@ -389,79 +385,31 @@
       }
     }
 
-    function login() {
-      // OAuth worker currently returns to the previous Pages path.
-      // That path shares localStorage with the new site on pkxdportal.github.io.
-      // Open login separately so the visitor remains on this site.
-      const loginWindow = window.open(LOGIN_URL, "pkxd_portal_owner_login", "popup,width=620,height=780");
-      if (!loginWindow) {
-        alert("Разреши всплывающее окно для входа или войди на прежней странице и вернись сюда.");
-        window.location.href = LOGIN_URL;
-      } else {
-        const loginBtn = document.getElementById("loginBtn");
-        loginBtn.textContent = "Заверши вход в открывшемся окне";
-      }
-    }
-
-    function logout() {
-      localStorage.removeItem("gh_token");
-      localStorage.removeItem("gh_login");
+    function updateEditorUI() {
+      const allowed = window.PKXDEditorAccess.isUnlocked();
+      document.body.classList.toggle("editor-unlocked", allowed);
+      const hub = document.querySelector(".portal-hub");
+      hub.hidden = !allowed;
+      document.getElementById("editorAccessBtn").classList.toggle("hidden", allowed);
+      document.getElementById("editorLogoutBtn").classList.toggle("hidden", !allowed);
       document.body.classList.remove("admin");
-      updateAuthUI();
-      closeAdminMenu();
-      location.reload();
-    }
-
-    function readAuthFromHash() {
-      const hash = window.location.hash.startsWith("#")
-        ? window.location.hash.slice(1)
-        : "";
-
-      if (!hash) return;
-
-      const params = new URLSearchParams(hash);
-      const token = params.get("gh_token");
-      const login = params.get("gh_login");
-
-      if (token && login) {
-        localStorage.setItem("gh_token", token);
-        localStorage.setItem("gh_login", login);
-
-        history.replaceState(
-          null,
-          "",
-          window.location.pathname + window.location.search
-        );
-      }
-    }
-
-    function updateAuthUI() {
-      const token = localStorage.getItem("gh_token");
-      const loginValue = localStorage.getItem("gh_login");
-      const isGitHubOwner = Boolean(token && loginValue === "pkxdportal");
-
-      document.body.classList.toggle("admin", isGitHubOwner);
-      document.getElementById("loginBtn").classList.toggle("hidden", isGitHubOwner);
-      document.getElementById("logoutBtn").classList.toggle("hidden", !isGitHubOwner);
-      document.getElementById("newPostBtn").classList.toggle("hidden", !isGitHubOwner);
-
-      const editorsOpen = window.PKXDEditorAccess.isUnlocked();
-      document.body.classList.toggle("editor-unlocked", editorsOpen);
-      document.querySelector(".portal-hub").hidden = !editorsOpen;
-      document.getElementById("editorAccessBtn").classList.toggle("hidden", editorsOpen);
-      document.getElementById("editorLogoutBtn").classList.toggle("hidden", !editorsOpen);
     }
 
     function openEditorLogin() {
       const dialog = document.getElementById("editorAccessDialog");
+      if (window.PKXDEditorAccess.isUnlocked()) {
+        updateEditorUI();
+        return;
+      }
       document.getElementById("editorPassword").value = "";
       document.getElementById("editorAccessError").textContent = "";
-      dialog.showModal();
+      if (!dialog.open) dialog.showModal();
       document.getElementById("editorPassword").focus();
     }
 
     function closeEditorLogin() {
-      document.getElementById("editorAccessDialog").close();
+      const dialog = document.getElementById("editorAccessDialog");
+      if (dialog.open) dialog.close();
     }
 
     async function submitEditorPassword(event) {
@@ -472,32 +420,30 @@
       submit.disabled = true;
       error.textContent = "";
       try {
-        const valid = await window.PKXDEditorAccess.unlock(field.value);
+        const valid = await PKXDEditorAccess.unlock(field.value);
         if (!valid) {
-          error.textContent = "Неверный пароль. Попробуй ещё раз.";
+          error.textContent = "Неверный пароль.";
           field.focus();
           field.select();
           return;
         }
         closeEditorLogin();
-        updateAuthUI();
-        document.querySelector(".portal-hub").scrollIntoView({ behavior: "smooth", block: "start" });
+        updateEditorUI();
+        document.querySelector(".portal-hub").scrollIntoView({behavior:"smooth",block:"start"});
       } catch (e) {
-        error.textContent = "Не удалось проверить пароль. Перезагрузи страницу.";
+        error.textContent = "Ошибка входа. Обнови страницу.";
         console.error(e);
-      } finally {
-        submit.disabled = false;
-      }
+      } finally { submit.disabled = false; }
     }
 
     function lockEditors() {
       window.PKXDEditorAccess.lock();
-      updateAuthUI();
+      updateEditorUI();
     }
 
-    function isAdmin() {
-      return document.body.classList.contains("admin");
-    }
+    // Public posts remain read-only. Owner work on the three visual editors
+    // does not require a GitHub account or GitHub token.
+    function isAdmin() { return false; }
 
     function getToken() {
       return localStorage.getItem("gh_token") || "";
@@ -1132,17 +1078,11 @@
     document.getElementById("searchInput").addEventListener("input", renderPosts);
     document.getElementById("categoryFilter").addEventListener("change", renderPosts);
 
-    readAuthFromHash();
-    updateAuthUI();
-    window.addEventListener("storage", (event) => {
-      if (event.key === "gh_token" || event.key === "gh_login" || event.key === PKXDEditorAccess.storageKey) updateAuthUI();
+    updateEditorUI();
+    window.addEventListener("storage", event => {
+      if (event.key === PKXDEditorAccess.storageKey) updateEditorUI();
     });
-    window.addEventListener("focus", () => {
-      updateAuthUI();
-      if (document.body.classList.contains("admin")) {
-        document.getElementById("loginBtn").textContent = "Вход для публикаций";
-      }
-    });
+    window.addEventListener("pageshow", updateEditorUI);
     loadPosts();
   </script>
 </body>
