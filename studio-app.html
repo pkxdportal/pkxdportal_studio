@@ -51,6 +51,51 @@ if(!window.PKXDEditorAccess || !PKXDEditorAccess.isUnlocked()) location.replace(
    }
  }
  document.querySelectorAll("[data-view]").forEach(btn=>btn.addEventListener("click",()=>select(btn.dataset.view)));
+
+ // Watermark is part of the card DOM, not just the editor background.
+ // This ensures html2canvas includes it in downloaded PNG files.
+ const watermarkURL=new URL("assets/portal-watermark.svg",window.location.href).href;
+ function installWatermark(doc){
+   if(!doc || !doc.getElementById("poster"))return;
+   const poster=doc.getElementById("poster");
+   if(!poster.querySelector(":scope > .pkxd-watermark-overlay")){
+     const image=doc.createElement("img");
+     image.className="pkxd-watermark-overlay";
+     image.src=watermarkURL;
+     image.alt="";
+     image.setAttribute("aria-hidden","true");
+     image.draggable=false;
+     // Always cover the full HEIGHT. Crop any horizontal overflow.
+     image.style.cssText="position:absolute!important;top:0!important;left:50%!important;transform:translateX(-50%)!important;height:100%!important;width:auto!important;max-width:none!important;min-width:0!important;opacity:0.13!important;z-index:80!important;pointer-events:none!important;user-select:none!important;object-fit:fill!important;";
+     poster.style.position="relative";
+     poster.style.overflow="hidden";
+     poster.appendChild(image);
+   }
+ }
+ function trackWatermark(doc){
+   if(!doc)return;
+   const poster=doc.getElementById("poster");
+   if(!poster || poster.dataset.pkxdWatermarkObserved==="1")return;
+   poster.dataset.pkxdWatermarkObserved="1";
+   installWatermark(doc);
+   new MutationObserver(()=>installWatermark(doc)).observe(poster,{childList:true});
+ }
+ function connectChestWatermark(doc){
+   const chest=doc.getElementById("chestFrame");
+   if(!chest || chest.dataset.pkxdWatermarkConnected==="1")return;
+   chest.dataset.pkxdWatermarkConnected="1";
+   const apply=()=>{
+     try {
+       const nested=chest.contentDocument;
+       if(!nested)return;
+       if(nested.readyState==="loading"){
+         nested.addEventListener("DOMContentLoaded",()=>trackWatermark(nested),{once:true});
+       }else trackWatermark(nested);
+     }catch(error){console.warn("Watermark / chests:",error);}
+   };
+   chest.addEventListener("load",apply);
+   apply();
+ }
  function attach(){
   try{
    const w=frame.contentWindow,d=frame.contentDocument;
@@ -66,6 +111,8 @@ if(!window.PKXDEditorAccess || !PKXDEditorAccess.isUnlocked()) location.replace(
       .poster-main-penalties .rule-item [contenteditable]{font-size:inherit!important;line-height:inherit!important}
      `;
    d.head.appendChild(st);
+   trackWatermark(d);
+   connectChestWatermark(d);
    // Оставляем адаптацию заметок и названий. Только пункты правил
    // закреплены читаемым размером через CSS !important.
    // Старая кнопка переключения должна возвращать на основную страницу.
