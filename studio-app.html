@@ -54,7 +54,7 @@ if(!window.PKXDEditorAccess || !PKXDEditorAccess.isUnlocked()) location.replace(
 
  // Watermark is part of the card DOM, not just the editor background.
  // This ensures html2canvas includes it in downloaded PNG files.
- const watermarkURL=new URL("assets/portal-watermark.svg",window.location.href).href;
+ const watermarkURL=new URL("assets/portal-watermark.png",window.location.href).href;
  function installWatermark(doc){
    if(!doc || !doc.getElementById("poster"))return;
    const poster=doc.getElementById("poster");
@@ -66,7 +66,7 @@ if(!window.PKXDEditorAccess || !PKXDEditorAccess.isUnlocked()) location.replace(
      image.setAttribute("aria-hidden","true");
      image.draggable=false;
      // Always cover the full HEIGHT. Crop any horizontal overflow.
-     image.style.cssText="position:absolute!important;top:0!important;left:50%!important;transform:translateX(-50%)!important;height:100%!important;width:auto!important;max-width:none!important;min-width:0!important;opacity:0.13!important;z-index:80!important;pointer-events:none!important;user-select:none!important;object-fit:fill!important;";
+     image.style.cssText="position:absolute!important;top:0!important;left:50%!important;transform:translateX(-50%)!important;height:100%!important;width:auto!important;max-width:none!important;min-width:0!important;opacity:0.05!important;z-index:80!important;pointer-events:none!important;user-select:none!important;object-fit:fill!important;";
      poster.style.position="relative";
      poster.style.overflow="hidden";
      poster.appendChild(image);
