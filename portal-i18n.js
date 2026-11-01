@@ -129,7 +129,19 @@ function translatePostPage(){
  const headerCategory=document.querySelector(".post-page .tag:not(.pin-tag)");
  if(headerCategory && !headerCategory.dataset.original)headerCategory.dataset.original=headerCategory.textContent;
  if(lang==="en" && Array.isArray(trans.paragraphs)){
-  const nodes=trans.paragraphs.map(text=>{const p=document.createElement("p");p.textContent=text;return p;});
+  const nodes=trans.paragraphs.map(text=>{
+   const p=document.createElement("p");
+   const parts=String(text).split(/(https?:\/\/[^\s]+)/g);
+   for(const part of parts){
+    if(/^https?:\/\//.test(part)){
+     const url=part.replace(/[),.]+$/,"");
+     const tail=part.slice(url.length);
+     const a=document.createElement("a");a.href=url;a.textContent=url;a.target="_blank";a.rel="noopener noreferrer";
+     p.append(a,document.createTextNode(tail));
+    }else p.append(document.createTextNode(part));
+   }
+   return p;
+  });
   post.replaceChildren(...nodes);
   document.title=trans.title+" | PK XD PORTAL";
  }else{
