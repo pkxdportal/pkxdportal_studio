@@ -13,7 +13,7 @@
   <meta property="og:url" content="https://pkxdportal.github.io/pkxdportal_studio/" />
   <meta property="og:image" content="https://pkxdportal.github.io/pkxdportal_studio/assets/portal-badge.png" />
 
-  <link rel="stylesheet" href="style.css?v=20261101-sidebar-v3" />
+  <link rel="stylesheet" href="style.css?v=20261101-sidebar-v4" />
   <script src="portal-i18n.js?v=20261101-sidebar-v3"></script>
 <style id="pkxd-home-layout-v3">
 
@@ -110,6 +110,60 @@
   body.portal-home .portal-hub-grid{grid-template-columns:1fr !important;}
   body.portal-home .portal-feed{width:100% !important;min-width:0 !important;}
 }
+
+/* Desktop owner tools: taller navigation panel and more comfortable cards. */
+@media (min-width: 761px) {
+  body.portal-home.editor-unlocked .portal-layout {
+    grid-template-columns: clamp(285px, 21vw, 330px) minmax(0, 1fr) !important;
+  }
+  body.portal-home .portal-sidebar .portal-hub:not([hidden]) {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: max(620px, calc(100dvh - 205px)) !important;
+    max-height: calc(100dvh - 36px);
+    overflow-y: auto;
+    padding: 24px 17px !important;
+  }
+  body.portal-home .portal-hub-heading {
+    margin-bottom: 22px !important;
+    padding: 0 8px !important;
+  }
+  body.portal-home .portal-hub h2 { font-size: 22px !important; }
+  body.portal-home .portal-hub-heading p { font-size: 13px !important; }
+  body.portal-home .portal-hub-grid {
+    flex: 1 1 auto !important;
+    justify-content: space-evenly !important;
+    gap: 14px !important;
+  }
+  body.portal-home .portal-hub-card {
+    min-height: 122px !important;
+    grid-template-columns: 50px minmax(0, 1fr) 18px !important;
+    padding: 18px 14px !important;
+    gap: 12px !important;
+    border-radius: 18px !important;
+  }
+  body.portal-home .portal-hub-card .portal-hub-icon {
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 14px !important;
+  }
+  body.portal-home .portal-hub-card .portal-hub-icon svg {
+    width: 26px !important;
+    height: 26px !important;
+  }
+  body.portal-home .portal-hub-card .portal-hub-copy strong {
+    font-size: 16px !important;
+    line-height: 1.2 !important;
+  }
+  body.portal-home .portal-hub-card .portal-hub-copy small {
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+  }
+  body.portal-home .portal-hub-card .portal-hub-cta span {
+    font-size: 19px !important;
+  }
+}
+
 </style>
 
 </head>
