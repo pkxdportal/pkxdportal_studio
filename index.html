@@ -13,8 +13,105 @@
   <meta property="og:url" content="https://pkxdportal.github.io/pkxdportal_studio/" />
   <meta property="og:image" content="https://pkxdportal.github.io/pkxdportal_studio/assets/portal-badge.png" />
 
-  <link rel="stylesheet" href="style.css" />
-  <script src="portal-i18n.js"></script>
+  <link rel="stylesheet" href="style.css?v=20261101-sidebar-v3" />
+  <script src="portal-i18n.js?v=20261101-sidebar-v3"></script>
+<style id="pkxd-home-layout-v3">
+
+/* Home v3: wide desktop split. Sidebar left, post feed right. */
+@media (min-width: 761px) {
+  body.portal-home .container{
+    max-width: 1560px !important;
+    width: 100%;
+    padding: 30px clamp(20px, 3.1vw, 58px) 72px !important;
+  }
+  body.portal-home.editor-unlocked .portal-layout{
+    display: grid !important;
+    width: 100%;
+    max-width: none !important;
+    grid-template-columns: clamp(240px, 19vw, 286px) minmax(0, 1fr) !important;
+    align-items: start !important;
+    gap: clamp(20px, 2.5vw, 36px) !important;
+  }
+  body.portal-home.editor-unlocked .portal-sidebar{
+    display: block !important;
+    min-width: 0 !important;
+    width: auto !important;
+    position: sticky !important;
+    top: 18px;
+  }
+  body.portal-home .portal-sidebar .mobile-tools-toggle {
+    display: none !important;
+  }
+  body.portal-home .portal-sidebar .portal-hub:not([hidden]){
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 18px 12px !important;
+    border-radius: 22px !important;
+  }
+  body.portal-home .portal-hub-heading{
+    display: block !important;
+    margin: 0 0 16px !important;
+    padding: 0 7px !important;
+  }
+  body.portal-home .portal-hub h2{font-size:19px !important;margin:7px 0 7px !important;}
+  body.portal-home .portal-hub-heading p{font-size:12px !important;}
+  body.portal-home .portal-hub-counter{display:none !important;}
+  body.portal-home .portal-hub-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: none !important;
+    gap: 9px !important;
+  }
+  body.portal-home .portal-hub-card{
+    display:grid !important;
+    grid-template-columns: 39px minmax(0,1fr) 13px !important;
+    grid-template-rows: 1fr !important;
+    width:100% !important;
+    min-height:86px !important;
+    padding:13px 11px !important;
+    gap:10px !important;
+    align-items:center !important;
+    border-radius:15px !important;
+  }
+  body.portal-home .portal-hub-card .portal-hub-icon{
+    grid-column:1 !important;grid-row:1 !important;
+    width:39px !important;height:39px !important;
+  }
+  body.portal-home .portal-hub-card .portal-hub-copy{
+    grid-column:2 !important;grid-row:1 !important;gap:5px !important;
+  }
+  body.portal-home .portal-hub-card .portal-hub-copy strong{font-size:14px !important;line-height:1.15 !important;}
+  body.portal-home .portal-hub-card .portal-hub-copy small{font-size:11px !important;line-height:1.3 !important;}
+  body.portal-home .portal-hub-card .portal-hub-cta{
+    grid-column:3 !important;grid-row:1 !important;
+    width:auto !important;font-size:0 !important;
+    justify-content:center !important;
+  }
+  body.portal-home .portal-hub-card .portal-hub-cta span{font-size:16px !important;}
+  body.portal-home.editor-unlocked .portal-feed{
+    min-width: 0 !important;
+    width:100% !important;
+    align-self:start !important;
+  }
+  body.portal-home .portal-feed .toolbar{
+    margin-top:0 !important;
+    margin-bottom:20px !important;
+  }
+}
+@media (max-width: 760px) {
+  body.portal-home .container{width:100% !important;max-width:none !important;}
+  body.portal-home .portal-layout{display:flex !important;flex-direction:column !important;gap:14px !important;}
+  body.portal-home.editor-unlocked .portal-sidebar{display:block !important;width:100% !important;}
+  body.portal-home .mobile-tools-toggle{display:flex !important;width:100% !important;}
+  body.portal-home .portal-sidebar .portal-hub:not([hidden]){display:none !important;}
+  body.portal-home.editor-unlocked.mobile-tools-open .portal-sidebar .portal-hub:not([hidden]){display:block !important;}
+  body.portal-home .portal-hub-grid{grid-template-columns:1fr !important;}
+  body.portal-home .portal-feed{width:100% !important;min-width:0 !important;}
+}
+</style>
+
 </head>
 <body class="portal-home">
   <div class="page-bg"></div>
@@ -63,20 +160,6 @@
           <span class="portal-hub-counter">03 ИНСТРУМЕНТА</span>
         </div>
         <div class="portal-hub-grid">
-          <a class="portal-hub-card hub-rules" href="studio-app.html#rules">
-            <span class="portal-hub-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5c0 4.7 2.8 8.2 7 10 4.2-1.8 7-5.3 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>
-            </span>
-            <span class="portal-hub-copy"><strong>Студия правил</strong><small>Меняй карточки правил и сохраняй изображения.</small></span>
-            <span class="portal-hub-cta">ОТКРЫТЬ <span aria-hidden="true">↗</span></span>
-          </a>
-          <a class="portal-hub-card hub-chests" href="studio-app.html#chests">
-            <span class="portal-hub-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16v11H4zM3 5h18v4H3zM9 9v3h6V9M12 12v8"/></svg>
-            </span>
-            <span class="portal-hub-copy"><strong>Конструктор сундуков</strong><small>Собирай шаблоны и серии карточек с фото.</small></span>
-            <span class="portal-hub-cta">СОЗДАТЬ <span aria-hidden="true">↗</span></span>
-          </a>
           <a class="portal-hub-card hub-avatars" href="studio-app.html#avatars">
             <span class="portal-hub-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="3.2"/><path d="M5.5 20c.8-4 3-6 6.5-6s5.7 2 6.5 6M18.5 3.5v3M17 5h3"/></svg>
@@ -84,7 +167,20 @@
             <span class="portal-hub-copy"><strong>Редактор аватарок</strong><small>Фотографии, рамки, эффекты и текст.</small></span>
             <span class="portal-hub-cta">СОЗДАТЬ <span aria-hidden="true">↗</span></span>
           </a>
-          
+          <a class="portal-hub-card hub-rules" href="studio-app.html#rules">
+            <span class="portal-hub-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5c0 4.7 2.8 8.2 7 10 4.2-1.8 7-5.3 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>
+            </span>
+            <span class="portal-hub-copy"><strong>Редактор правил</strong><small>Меняй карточки правил и сохраняй изображения.</small></span>
+            <span class="portal-hub-cta">ОТКРЫТЬ <span aria-hidden="true">↗</span></span>
+          </a>
+          <a class="portal-hub-card hub-chests" href="studio-app.html#chests">
+            <span class="portal-hub-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16v11H4zM3 5h18v4H3zM9 9v3h6V9M12 12v8"/></svg>
+            </span>
+            <span class="portal-hub-copy"><strong>Редактор сундуков</strong><small>Собирай шаблоны и серии карточек с фото.</small></span>
+            <span class="portal-hub-cta">СОЗДАТЬ <span aria-hidden="true">↗</span></span>
+          </a>
         </div>
       </nav>
       </aside>
