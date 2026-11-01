@@ -16,6 +16,7 @@ iframe.ready{opacity:1}
 @media(max-width:620px){.topbar{padding:5px;gap:5px}.topbar a,.topbar button{font-size:12px;padding:9px 10px}}
 </style>
 <script src="editor-access.js"></script>
+<script src="portal-i18n.js"></script>
 <script>
 if(!window.PKXDEditorAccess || !PKXDEditorAccess.isUnlocked()) location.replace("index.html");
 </script>
@@ -88,14 +89,38 @@ if(!window.PKXDEditorAccess || !PKXDEditorAccess.isUnlocked()) location.replace(
      try {
        const nested=chest.contentDocument;
        if(!nested)return;
-       if(nested.readyState==="loading"){
-         nested.addEventListener("DOMContentLoaded",()=>trackWatermark(nested),{once:true});
-       }else trackWatermark(nested);
+       const setup=()=>{trackWatermark(nested);PKXDI18N.attach(nested);};
+       if(nested.readyState==="loading")nested.addEventListener("DOMContentLoaded",setup,{once:true});
+       else setup();
      }catch(error){console.warn("Watermark / chests:",error);}
    };
    chest.addEventListener("load",apply);
    apply();
  }
+ function connectAvatarLanguage(doc){
+   const avatar=doc.getElementById("avatarFrame");
+   if(!avatar || avatar.dataset.pkxdI18nConnected==="1")return;
+   avatar.dataset.pkxdI18nConnected="1";
+   const onLoad=()=>{
+     try{
+       const nested=avatar.contentDocument;
+       if(!nested)return;
+       const update=()=>PKXDI18N.attach(nested);
+       if(nested.readyState==="loading")nested.addEventListener("DOMContentLoaded",update,{once:true});
+       else update();
+     }catch(e){console.warn("Avatar locale",e);}
+   };
+   avatar.addEventListener("load",onLoad);onLoad();
+ }
+ function updateEngineLanguage(){
+   try{
+     const engine=frame.contentWindow;
+     const language=PKXDI18N.getLanguage();
+     if(typeof engine?.setPortalLanguage==="function")engine.setPortalLanguage(language);
+     if(frame.contentDocument)PKXDI18N.attach(frame.contentDocument);
+   }catch(e){console.warn("Language sync",e);}
+ }
+ window.addEventListener("pkxd-language-change",()=>{updateEngineLanguage();});
  function attach(){
   try{
    const w=frame.contentWindow,d=frame.contentDocument;
@@ -111,6 +136,8 @@ if(!window.PKXDEditorAccess || !PKXDEditorAccess.isUnlocked()) location.replace(
       .poster-main-penalties .rule-item [contenteditable]{font-size:inherit!important;line-height:inherit!important}
      `;
    d.head.appendChild(st);
+   PKXDI18N.attach(d);
+   connectAvatarLanguage(d);
    trackWatermark(d);
    connectChestWatermark(d);
    // Оставляем адаптацию заметок и названий. Только пункты правил
@@ -124,6 +151,7 @@ if(!window.PKXDEditorAccess || !PKXDEditorAccess.isUnlocked()) location.replace(
      new MutationObserver(()=>{if(!launcher.hidden) returnHome();}).observe(launcher,{attributes:true,attributeFilter:["hidden"]});
    }
    select(view);
+   updateEngineLanguage();
    frame.classList.add("ready");
   }catch(err){
     console.warn("Ошибка подготовки студии",err);
