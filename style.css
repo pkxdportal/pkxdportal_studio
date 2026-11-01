@@ -1035,3 +1035,9 @@ body.portal-home .mobile-tools-toggle {
 @media (prefers-reduced-motion: reduce) {
   body.portal-home .mobile-tools-chevron { transition: none; }
 }
+
+/* Keep the desktop tool rail available while scrolling through posts. */
+@media (min-width: 761px) {
+  body.portal-home.editor-unlocked .portal-sidebar { position: sticky; top: 22px; }
+  body.portal-home .portal-hub { position: static; }
+}

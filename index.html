@@ -456,7 +456,13 @@
         }
         closeEditorLogin();
         updateEditorUI();
-        document.querySelector(".portal-hub").scrollIntoView({behavior:"smooth",block:"start"});
+        if (window.matchMedia("(max-width: 760px)").matches) {
+          document.body.classList.add("mobile-tools-open");
+          document.getElementById("mobileToolsToggle").setAttribute("aria-expanded", "true");
+          document.getElementById("mobileToolsToggle").scrollIntoView({behavior:"smooth",block:"start"});
+        } else {
+          document.querySelector(".portal-hub").scrollIntoView({behavior:"smooth",block:"start"});
+        }
       } catch (e) {
         error.textContent = "Ошибка входа. Обнови страницу.";
         console.error(e);
