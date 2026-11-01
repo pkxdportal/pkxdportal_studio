@@ -11,6 +11,7 @@
   <meta property="og:url" content="https://pkxdportal.github.io/pkxd-portal-posts/posts/baza-owner.html" />
   <meta property="og:image" content="https://pkxdportal.github.io/pkxd-portal-posts/assets/portal-badge.png" />
   <link rel="stylesheet" href="../style.css" />
+  <script src="../portal-i18n.js"></script>
 </head>
 <body>
   <div class="page-bg"></div>
@@ -86,6 +87,9 @@
     });
 
     refreshLikes();
+    window.addEventListener("pkxd-language-change", () => PKXDI18N.translatePostPage());
+    window.addEventListener("pkxd-post-translations-ready", () => PKXDI18N.translatePostPage());
+    PKXDI18N.loadPostTranslations("../");
   </script>
 </body>
 </html>
