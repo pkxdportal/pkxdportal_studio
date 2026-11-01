@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="style.css" />
   <script src="portal-i18n.js"></script>
 </head>
-<body>
+<body class="portal-home">
   <div class="page-bg"></div>
 
   <div class="container">
@@ -42,7 +42,18 @@
       </div>
 
 
-      <nav class="portal-hub" aria-label="Инструменты владельца" hidden>
+    </header>
+
+    <div class="portal-layout">
+      <aside class="portal-sidebar" aria-label="Инструменты владельца">
+
+        <button id="mobileToolsToggle" type="button" class="mobile-tools-toggle" aria-expanded="false" aria-controls="portalHub" onclick="toggleMobileTools()">
+          <span class="mobile-tools-toggle-icon" aria-hidden="true">▦</span>
+          <span>Инструменты владельца</span>
+          <span class="mobile-tools-chevron" aria-hidden="true">⌄</span>
+        </button>
+
+      <nav id="portalHub" class="portal-hub" aria-label="Инструменты владельца" hidden>
         <div class="portal-hub-heading">
           <div>
             <span class="portal-hub-eyebrow">УПРАВЛЕНИЕ</span>
@@ -76,7 +87,9 @@
           
         </div>
       </nav>
+      </aside>
 
+      <div class="portal-feed">
       <div class="toolbar" id="posts">
         <input
           id="searchInput"
@@ -89,8 +102,6 @@
           <option value="all">Все категории</option>
         </select>
       </div>
-    </header>
-
     <main>
       <section id="pinnedSection" class="section hidden">
         <h2 class="section-title">Закреплённые</h2>
@@ -102,6 +113,9 @@
         <div id="postList" class="post-list"></div>
       </section>
     </main>
+      </div>
+    </div>
+
   </div>
 
   <div id="adminModal" class="modal-backdrop hidden">
@@ -393,9 +407,19 @@
       document.body.classList.toggle("editor-unlocked", allowed);
       const hub = document.querySelector(".portal-hub");
       hub.hidden = !allowed;
+      if (!allowed) {
+        document.body.classList.remove("mobile-tools-open");
+        document.getElementById("mobileToolsToggle").setAttribute("aria-expanded", "false");
+      }
       document.getElementById("editorAccessBtn").classList.toggle("hidden", allowed);
       document.getElementById("editorLogoutBtn").classList.toggle("hidden", !allowed);
       document.body.classList.remove("admin");
+    }
+
+    function toggleMobileTools() {
+      if (!window.PKXDEditorAccess.isUnlocked()) return;
+      const open = document.body.classList.toggle("mobile-tools-open");
+      document.getElementById("mobileToolsToggle").setAttribute("aria-expanded", String(open));
     }
 
     function openEditorLogin() {

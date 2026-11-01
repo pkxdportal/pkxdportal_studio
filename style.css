@@ -797,3 +797,241 @@ body.editor-unlocked .portal-hub:not([hidden]) { display: block !important; }
 .editor-auth-dialog .editor-auth-error { min-height:22px; margin:9px 0; color:#ff8ba1 }
 .editor-auth-actions { display:flex; gap:9px; justify-content:flex-end; flex-wrap:wrap }
 .editor-auth-submit { background:linear-gradient(120deg,#d866bd,#866bea); color:white; }
+
+
+/* PK XD PORTAL: two-column desktop home, compact mobile owner tools.
+   Only applies to the homepage, leaving individual posts and editors intact. */
+body.portal-home .container {
+  max-width: 1440px;
+  padding: 32px clamp(16px, 3vw, 48px) 80px;
+}
+body.portal-home .hero { margin: 0 0 28px; }
+body.portal-home .hero-top {
+  margin: 0;
+  padding: 4px 0 24px;
+  border-bottom: 1px solid rgba(255,255,255,.085);
+}
+body.portal-home .hero h1 {
+  font-size: clamp(2rem, 3.2vw, 2.9rem);
+}
+body.portal-home .portal-layout {
+  display: grid;
+  grid-template-columns: 288px minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(20px, 3vw, 38px);
+}
+body.portal-home .portal-sidebar,
+body.portal-home .portal-feed { min-width: 0; }
+body.portal-home:not(.editor-unlocked) .portal-layout {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+body.portal-home:not(.editor-unlocked) .portal-sidebar {
+  display: none;
+}
+body.portal-home .portal-hub {
+  position: sticky;
+  top: 22px;
+  margin: 0;
+  padding: 20px 14px 16px;
+  border-radius: 22px;
+  background: linear-gradient(165deg,rgba(43,24,59,.88),rgba(17,19,34,.93));
+  border: 1px solid rgba(255,155,227,.16);
+  box-shadow: 0 15px 40px rgba(0,0,0,.2);
+}
+body.portal-home .portal-hub-heading {
+  display: block;
+  margin-bottom: 18px;
+  padding: 2px 8px;
+}
+body.portal-home .portal-hub h2 {
+  font-size: 21px;
+  line-height: 1.15;
+  margin: 8px 0 8px;
+}
+body.portal-home .portal-hub-heading p {
+  font-size: 12px;
+  line-height: 1.5;
+}
+body.portal-home .portal-hub-counter { display: none; }
+body.portal-home .portal-hub-grid {
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+body.portal-home .portal-hub-card {
+  min-height: 96px;
+  padding: 14px 12px;
+  display: grid;
+  grid-template-columns: 42px minmax(0,1fr) 18px;
+  grid-template-rows: 1fr;
+  gap: 12px;
+  align-items: center;
+  border-radius: 16px;
+}
+body.portal-home .portal-hub-icon {
+  width: 42px;
+  height: 42px;
+  grid-column: 1;
+  grid-row: 1;
+  border-radius: 13px;
+}
+body.portal-home .portal-hub-icon svg {
+  width: 22px;
+  height: 22px;
+}
+body.portal-home .portal-hub-copy {
+  grid-column: 2;
+  grid-row: 1;
+  gap: 5px;
+}
+body.portal-home .portal-hub-copy strong {
+  font-size: 15px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+body.portal-home .portal-hub-copy small {
+  font-size: 11px;
+  line-height: 1.35;
+}
+body.portal-home .portal-hub-cta {
+  grid-column: 3;
+  grid-row: 1;
+  justify-content: flex-end;
+  width: auto;
+  font-size: 0;
+}
+body.portal-home .portal-hub-cta span {
+  font-size: 19px;
+}
+body.portal-home .portal-feed .toolbar {
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: rgba(18, 22, 32, .72);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 20px;
+}
+body.portal-home .portal-feed .search-input {
+  flex: 1 1 260px;
+}
+body.portal-home .portal-feed .filter-select {
+  width: auto;
+  flex: 0 1 218px;
+}
+body.portal-home .portal-feed .section:first-child {
+  margin-top: 0;
+}
+body.portal-home .portal-feed .section-title {
+  font-size: 1.25rem;
+  margin-bottom: 17px;
+}
+body.portal-home .portal-feed .post-card {
+  padding: clamp(18px, 2vw, 28px);
+}
+body.portal-home .portal-feed .post-card h3 {
+  font-size: clamp(1.45rem, 2.2vw, 2rem);
+}
+body.portal-home .mobile-tools-toggle {
+  display: none;
+}
+@media (max-width: 900px) {
+  body.portal-home .portal-layout {
+    grid-template-columns: 236px minmax(0,1fr);
+    gap: 16px;
+  }
+  body.portal-home .portal-hub {
+    padding: 15px 10px;
+  }
+  body.portal-home .portal-hub-card {
+    grid-template-columns: 36px minmax(0,1fr) 14px;
+    gap: 8px;
+    padding: 11px 8px;
+  }
+  body.portal-home .portal-hub-icon {
+    width: 36px;
+    height: 36px;
+  }
+}
+@media (max-width: 760px) {
+  body.portal-home .container { padding: 22px 14px 54px; }
+  body.portal-home .hero { margin-bottom: 18px; }
+  body.portal-home .hero-top {
+    padding-bottom: 18px;
+  }
+  body.portal-home .portal-layout,
+  body.portal-home:not(.editor-unlocked) .portal-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 100%;
+  }
+  body.portal-home .portal-sidebar,
+  body.portal-home .portal-feed { width: 100%; }
+  body.portal-home .portal-sidebar { display: none; }
+  body.portal-home.editor-unlocked .portal-sidebar { display: block; }
+  body.portal-home .mobile-tools-toggle {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 17px;
+    border: 1px solid rgba(255,155,227,.25);
+    border-radius: 16px;
+    background: linear-gradient(125deg,rgba(54,30,70,.94),rgba(22,21,41,.96));
+    color: #fff;
+    text-align: left;
+    font: 700 14px Inter,Arial,sans-serif;
+    cursor: pointer;
+  }
+  body.portal-home .mobile-tools-toggle-icon { color: #ff9bdd; font-size: 20px; }
+  body.portal-home .mobile-tools-chevron {
+    font-size: 21px;
+    margin-left: auto;
+    transition: transform .18s ease;
+  }
+  body.portal-home.mobile-tools-open .mobile-tools-chevron {
+    transform: rotate(180deg);
+  }
+  body.portal-home .portal-sidebar .portal-hub:not([hidden]) {
+    display: none !important;
+  }
+  body.portal-home.editor-unlocked.mobile-tools-open .portal-sidebar .portal-hub:not([hidden]) {
+    display: block !important;
+  }
+  body.portal-home .portal-hub {
+    position: static;
+    margin: 10px 0 0;
+  }
+  body.portal-home .portal-hub-card { min-height: 74px; }
+  body.portal-home .portal-feed .toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    margin-bottom: 20px;
+  }
+  body.portal-home .portal-feed .search-input,
+  body.portal-home .portal-feed .filter-select {
+    width: 100%;
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+  body.portal-home .owner-actions {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+  body.portal-home .owner-actions .owner-btn {
+    width: auto;
+    flex: 1 1 180px;
+  }
+  body.portal-home .owner-actions #pkxd-language-control {
+    margin-left: auto;
+  }
+  body.portal-home .portal-feed .post-card { padding: 18px 16px; }
+  body.portal-home .portal-feed .post-card h3 { font-size: 1.5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.portal-home .mobile-tools-chevron { transition: none; }
+}
