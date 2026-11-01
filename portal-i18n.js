@@ -124,16 +124,21 @@ function translatePostPage(){
  const trans=postTranslations[slug],post=document.querySelector(".post-content");
  if(!post||!trans)return;
  if(!post.dataset.originalHtml)post.dataset.originalHtml=post.innerHTML;
+ const heading=document.querySelector(".post-page h1");
+ if(heading && !heading.dataset.original)heading.dataset.original=heading.textContent;
+ const headerCategory=document.querySelector(".post-page .tag:not(.pin-tag)");
+ if(headerCategory && !headerCategory.dataset.original)headerCategory.dataset.original=headerCategory.textContent;
  if(lang==="en" && Array.isArray(trans.paragraphs)){
   const nodes=trans.paragraphs.map(text=>{const p=document.createElement("p");p.textContent=text;return p;});
   post.replaceChildren(...nodes);
   document.title=trans.title+" | PK XD PORTAL";
  }else{
   post.innerHTML=post.dataset.originalHtml;
-  document.title=document.querySelector("h1")?.textContent||"PK XD PORTAL";
+  document.title=(heading?.dataset.original||"PK XD PORTAL")+" | PK XD PORTAL";
  }
  const title=document.querySelector(".post-page h1");
  if(title)title.textContent=lang==="en"?trans.title:(title.dataset.original||title.textContent);
+ if(headerCategory)headerCategory.textContent=lang==="en"?trans.category:(headerCategory.dataset.original||headerCategory.textContent);
 }
 window.PKXDI18N=Object.freeze({key:KEY,getLanguage,setLanguage,translate,apply,attach,installSelector,postView,loadPostTranslations,translatePostPage});
 function init(){installSelector();attach(document);window.addEventListener("storage",e=>{if(e.key===KEY){lang=e.newValue==="en"?"en":"ru";apply(document);updateSelector();window.dispatchEvent(new Event("pkxd-language-change"));}});}
