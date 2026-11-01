@@ -14,6 +14,7 @@
   <meta property="og:image" content="https://pkxdportal.github.io/pkxdportal_studio/assets/portal-badge.png" />
 
   <link rel="stylesheet" href="style.css" />
+  <script src="portal-i18n.js"></script>
 </head>
 <body>
   <div class="page-bg"></div>
@@ -248,13 +249,14 @@
     }
 
     function normalizePost(post) {
+      const localized = window.PKXDI18N?.postView(post) || post;
       return {
-        title: post?.title || "Без названия",
+        title: localized?.title || "Без названия",
         slug: post?.slug || "",
         date: post?.date || "",
         author: post?.author || DEFAULT_AUTHOR,
-        description: post?.description || "",
-        category: post?.category || "Общее",
+        description: localized?.description || "",
+        category: localized?.category || "Общее",
         pinned: Boolean(post?.pinned),
         image: post?.image || ""
       };
@@ -1090,6 +1092,13 @@
       if (event.key === PKXDEditorAccess.storageKey) updateEditorUI();
     });
     window.addEventListener("pageshow", updateEditorUI);
+    window.addEventListener("pkxd-language-change", () => {
+      fillCategories(allPosts); renderPosts();
+    });
+    window.addEventListener("pkxd-post-translations-ready", () => {
+      fillCategories(allPosts); renderPosts();
+    });
+    PKXDI18N.loadPostTranslations();
     loadPosts();
   </script>
 </body>
