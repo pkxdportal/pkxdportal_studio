@@ -16,7 +16,7 @@ function translate(t,language=lang){
  let result=map[trim];
  if(!result){
   let m;
-  if((m=trim.match(/^Лайков:\s*(\d+)$/)))result="Likes: "+m[1];
+  if(language==="en" && (m=trim.match(/^Лайков:\s*(\d+)$/)))result="Likes: "+m[1];
   if((m=trim.match(/^Likes:\s*(\d+)$/)) && language==="ru")result="Лайков: "+m[1];
   if(language==="en" && (m=trim.match(/^(.+)\s·\sчерновик$/)))result=translate(m[1],language)+" · draft";
  }
@@ -56,6 +56,17 @@ function apply(root){
   }
  }
  doc.documentElement.lang=lang;
+ if(root.nodeType===9 && doc===document && !doc.querySelector(".post-page")){
+  const titles={
+   "PK XD PORTAL — Новости, правила, сундуки и аватарки":["PK XD PORTAL — Новости, правила, сундуки и аватарки","PK XD PORTAL — News, Rules, Chests & Avatars"],
+   "PK XD PORTAL — Редакторы":["PK XD PORTAL — Редакторы","PK XD PORTAL — Editors"],
+   "PK XD PORTAL — Доступ к редакторам":["PK XD PORTAL — Доступ к редакторам","PK XD PORTAL — Editor Access"],
+   "PK XD PORTAL — Управление постами":["PK XD PORTAL — Управление постами","PK XD PORTAL — Post Management"]
+  };
+  const current=doc.title;
+  const pair=Object.values(titles).find(pair=>pair.includes(current));
+  if(pair)doc.title=pair[lang==="en"?1:0];
+ }
 }
 function attach(doc=document){
  if(!doc || !doc.body)return;
@@ -127,7 +138,10 @@ function translatePostPage(){
  const heading=document.querySelector(".post-page h1");
  if(heading && !heading.dataset.original)heading.dataset.original=heading.textContent;
  const headerCategory=document.querySelector(".post-page .tag:not(.pin-tag)");
- if(headerCategory && !headerCategory.dataset.original)headerCategory.dataset.original=headerCategory.textContent;
+ if(headerCategory && !headerCategory.dataset.original){
+  const label=headerCategory.textContent.trim();
+  headerCategory.dataset.original=enToRu[label]||label;
+ }
  if(lang==="en" && Array.isArray(trans.paragraphs)){
   const nodes=trans.paragraphs.map(text=>{
    const p=document.createElement("p");
